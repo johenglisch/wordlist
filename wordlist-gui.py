@@ -78,6 +78,7 @@ class MainWindow(wx.Frame):
 		self.dirname = ''
 		self.filename = ''
 		self.statusbar = None
+		self.wordlist = None
 		if filename:
 			self.load_wordlist(filename)
 		self.textview = None
