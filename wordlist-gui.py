@@ -14,7 +14,12 @@ from wx.lib.mixins.listctrl import ColumnSorterMixin
 from wordlist import WordList
 
 class ViewText(wx.Frame):
-	'''text viewer'''
+	'''window that shows the text the wordlist was made from
+	
+	attributes:
+		text		the control displaying the text
+		wordlist	the wordlist based on the text
+	'''
 
 	def __init__(self, wordlist, *args, **kwargs):
 		wx.Frame.__init__(self, *args, **kwargs)
@@ -38,7 +43,11 @@ class ViewText(wx.Frame):
 
 
 class TableDND(wx.FileDropTarget):
-	'''handle drag'n'drop on wordlist table'''
+	'''make wordlist table a target for file drag'n'drop
+
+	attributes:
+		self.window	drop target
+	'''
 
 	def __init__(self, window):
 		wx.FileDropTarget.__init__(self)
@@ -53,12 +62,21 @@ class TableDND(wx.FileDropTarget):
 
 
 class MainWindow(wx.Frame):
-	'''main window for wordlist programme'''
+	'''main window for wordlist programme
+	
+	attributes:
+		dirname		directory of the text file
+		filname		file name of the text file
+		statusbar	the statusbar widget
+		table		the table showing the wordlist
+		textview	the ViewText window
+		wordlist	the wordlist
+	'''
 
 	def __init__(self, filename, *args, **kwargs):
 		wx.Frame.__init__(self, *args, **kwargs)
-		self.filename = ''
 		self.dirname = ''
+		self.filename = ''
 		self.statusbar = None
 		if filename:
 			self.load_wordlist(filename)
