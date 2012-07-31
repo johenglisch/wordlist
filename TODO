@@ -4,6 +4,16 @@ General:
 
 Wordlist:
 
+ * FIXME:
+text content: 'a ac accumsan'
+output:
++----------+---+
+| a        | 4 |
+| ac       | 2 |
+| accumsan | 1 |
++----------+---+
+ -> check count algorithm!
+
 Command-line interface:
 
 Graphical user interface:
