@@ -37,6 +37,21 @@ class ViewText(wx.Frame):
 			self.text.SetValue(self.wordlist.raw_text)
 
 
+class TableDND(wx.FileDropTarget):
+	'''handle drag'n'drop on wordlist table'''
+
+	def __init__(self, window):
+		wx.FileDropTarget.__init__(self)
+		self.window = window
+
+	def OnDropFiles(self, x, y, filenames):
+		'''load wordlist on file drop'''
+		if len(filenames) > 1:
+			return
+		self.window.GetParent().load_wordlist(filenames[0])
+		self.window.GetParent().update_table()
+
+
 class MainWindow(wx.Frame):
 	'''main window for wordlist programme'''
 
@@ -109,6 +124,9 @@ class MainWindow(wx.Frame):
 		self.table = wx.ListCtrl(self, -1, style=wx.LC_REPORT)
 		self.table.InsertColumn(0, 'word')
 		self.table.InsertColumn(1, 'frequency')
+		# table drag'n'drop
+		droptarget = TableDND(self.table)
+		self.table.SetDropTarget(droptarget)
 
 	def load_wordlist(self, filename):
 		'''load wordlist from file'''
