@@ -59,6 +59,7 @@ class MainWindow(wx.Frame):
 		wx.Frame.__init__(self, *args, **kwargs)
 		self.filename = ''
 		self.dirname = ''
+		self.statusbar = None
 		if filename:
 			self.load_wordlist(filename)
 		self.textview = None
@@ -130,9 +131,13 @@ class MainWindow(wx.Frame):
 
 	def load_wordlist(self, filename):
 		'''load wordlist from file'''
+		if self.statusbar:
+			self.statusbar.SetStatusText('Reading data from file...')
 		with open(filename, 'r') as f:
 			text = unicode(f.read(), 'utf-8')
 		self.wordlist = WordList(text)
+		if self.statusbar:
+			self.statusbar.SetStatusText('Data read.')
 		self.dirname = os.path.dirname(filename)
 		self.filename = os.path.basename(filename)
 
