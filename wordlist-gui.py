@@ -3,7 +3,7 @@
 #########################################################################
 # programme	: wordlist-gui.py                                       #
 # description	: wxpython interface for wordlist                       #
-# last edit	: 30-Jul-2012                                           #
+# last edit	: 31-Jul-2012                                           #
 #	by	: Johannes Englisch                                     #
 #########################################################################
 
@@ -40,11 +40,12 @@ class ViewText(wx.Frame):
 class MainWindow(wx.Frame):
 	'''main window for wordlist programme'''
 
-	def __init__(self, wordlist, *args, **kwargs):
+	def __init__(self, filename, *args, **kwargs):
 		wx.Frame.__init__(self, *args, **kwargs)
-		self.wordlist = wordlist
 		self.filename = ''
 		self.dirname = ''
+		if filename:
+			self.load_wordlist(filename)
 		self.textview = None
 		self.init_ui()
 		self.Show()
@@ -109,22 +110,25 @@ class MainWindow(wx.Frame):
 		self.table.InsertColumn(0, 'word')
 		self.table.InsertColumn(1, 'frequency')
 
+	def load_wordlist(self, filename):
+		'''load wordlist from file'''
+		with open(filename, 'r') as f:
+			text = unicode(f.read(), 'utf-8')
+		self.wordlist = WordList(text)
+		self.dirname = os.path.dirname(filename)
+		self.filename = os.path.basename(filename)
+
 	def on_quit(self, event):
 		'''quit programme'''
 		self.Close()
 
 	def on_open(self, event):
-		'''open a text file'''
+		'''open a text file and generate wordlist'''
 		dialog = wx.FileDialog(self, message='', defaultDir=self.dirname,
 				defaultFile=self.filename, wildcard='*', style=wx.OPEN)
 		answer = dialog.ShowModal()
 		if answer == wx.ID_OK:
-			chosen = dialog.GetPath()
-			with open(chosen, 'r') as f:
-				text = unicode(f.read(), 'utf-8')
-			self.wordlist = WordList(text)
-			self.dirname = os.path.dirname(chosen)
-			self.filename = os.path.basename(chosen)
+			self.load_wordlist(dialog.GetPath())
 			self.update_table()
 		dialog.Destroy()
 
@@ -148,13 +152,11 @@ class MainWindow(wx.Frame):
 
 
 def main(args):
-	wordlist = None
+	filename = ''
 	if len(args) > 1:
-		with open(args[1], 'r') as f:
-			text = unicode(f.read(), 'utf-8')
-			wordlist = WordList(text)
+		filename = args[1]
 	app = wx.App()
-	MainWindow(wordlist, None)
+	MainWindow(filename, None)
 	app.MainLoop()
 
 
