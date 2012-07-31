@@ -31,7 +31,7 @@ class ViewText(wx.Frame):
 	def init_ui(self):
 		'''initialise user interface'''
 		self.SetTitle('View text')
-		self.SetSize((250, 200))
+		self.SetSize((300, 300))
 		# text view
 		self.text = wx.TextCtrl(self, style=wx.TE_MULTILINE)
 		self.text.SetEditable(False)
