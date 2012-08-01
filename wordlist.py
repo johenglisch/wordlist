@@ -20,15 +20,16 @@ class WordList(Counter):
 	'''
 
 	def __init__(self, text, stoplist=None):
+		super(Counter, self).__init__()
 		self.text = text
 		self.stoplist = []
 		if stoplist:
 			self.stoplist = stoplist
 		#words = re.sub('(?u)[\W\d]', '', text.lower())
 		#words = words.split()
-		words = re.findall('(?u)\w+', '', text.lower())
+		words = re.findall('(?u)\w+', text.lower())
 		words = [s for s in words if s not in self.stoplist]
-		super(Counter, self).__init__(words)
+		self.update(words)
 
 	def items_by_wordend(self):
 		'''return wordlist sorted by the ends of the words'''
