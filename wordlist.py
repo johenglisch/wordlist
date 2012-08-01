@@ -1,5 +1,4 @@
 #!/usr/bin/env python2
-# 
 
 #########################################################################
 # programme	: wordlist                                              #
@@ -9,8 +8,36 @@
 #########################################################################
 
 import re
+from collections import Counter
 
-class WordList():
+
+class WordList(Counter):
+	'''Counter subclass for creating a wordlist
+	
+	attributes:
+		text		unmodified text
+		stoplist	stoplist for the wordlist
+	'''
+
+	def __init__(self, text, stoplist=None):
+		self.text = text
+		self.stoplist = []
+		if stoplist:
+			self.stoplist = stoplist
+		#words = re.sub('(?u)[\W\d]', '', text.lower())
+		#words = words.split()
+		words = re.findall('(?u)\w+', '', text.lower())
+		words = [s for s in words if s not in self.stoplist]
+		super(Counter, self).__init__(words)
+
+	def items_by_wordend(self):
+		'''return wordlist sorted by the ends of the words'''
+		L = [(w[::-1], f) for w, f in self.items()]
+		L.sort()
+		return [(w[::-1], f) for w, f in L]
+
+
+class _WordList():
 	'''class of a word list
 
 	attributes:
