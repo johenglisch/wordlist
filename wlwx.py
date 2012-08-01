@@ -121,17 +121,6 @@ class MainWindow(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.on_save, self.filesave)
 		self.Bind(wx.EVT_MENU, self.on_quit, filequit)
 		self.Bind(wx.EVT_MENU, self.on_viewtext, self.toolsview)
-		# menu accelerators
-		#accelerators = wx.AcceleratorTable([
-			#(wx.ACCEL_CTRL, ord('O'), wx.ID_OPEN),
-			#(wx.ACCEL_CTRL, ord('S'), wx.ID_SAVE),
-			#(wx.ACCEL_CTRL, ord('Q'), wx.ID_EXIT),
-			#(wx.ACCEL_CTRL, ord('1'), viewbyword.GetId()),
-			#(wx.ACCEL_CTRL, ord('2'), viewbyend.GetId()),
-			#(wx.ACCEL_CTRL, ord('3'), viewbyfreq.GetId()),
-			#(wx.ACCEL_CTRL, ord('T'), self.toolsview.GetId()),
-			#])
-		#self.SetAcceleratorTable(accelerators)
 		# toolbar
 		self.toolbar = self.CreateToolBar()
 		tb_open = self.toolbar.AddLabelTool(wx.ID_OPEN, label='Open',
