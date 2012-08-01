@@ -13,16 +13,16 @@ import wx
 from wordlist import WordList
 
 class ViewText(wx.Frame):
-	'''window that shows the text the wordlist was made from
+	'''simple text viewer window
 	
 	attributes:
-		text		the control displaying the text
-		wordlist	the wordlist based on the text
+		text		the text to be displayed
+		textctrl	the control displaying the text
 	'''
 
-	def __init__(self, wordlist, *args, **kwargs):
+	def __init__(self, text, *args, **kwargs):
 		wx.Frame.__init__(self, *args, **kwargs)
-		self.wordlist = wordlist
+		self.text = text
 		self.init_ui()
 		self.Show()
 		self.update_text()
@@ -32,13 +32,12 @@ class ViewText(wx.Frame):
 		self.SetTitle('View text')
 		self.SetSize((300, 300))
 		# text view
-		self.text = wx.TextCtrl(self, style=wx.TE_MULTILINE)
-		self.text.SetEditable(False)
+		self.textctrl = wx.TextCtrl(self, style=wx.TE_MULTILINE)
+		self.textctrl.SetEditable(False)
 
 	def update_text(self):
 		'''update text field'''
-		if self.wordlist:
-			self.text.SetValue(self.wordlist.raw_text)
+		self.textctrl.SetValue(self.text)
 
 
 class TableDND(wx.FileDropTarget):
@@ -176,18 +175,18 @@ class MainWindow(wx.Frame):
 	def on_viewtext(self, event):
 		'''view the text'''
 		if self.textview:
-			self.textview.wordlist = self.wordlist
+			self.textview.text = self.wordlist.text
 			self.textview.update_text()
 			self.textview.SetFocus()
 		else:
-			self.textview = ViewText(self.wordlist, self)
+			self.textview = ViewText(self.wordlist.text, self)
 
 	def update_table(self):
 		'''refill the table with the content of the wordlist'''
 		self.statusbar.SetStatusText('Updating wordlist...')
 		self.table.DeleteAllItems()
 		if self.wordlist:
-			for i in sorted(self.wordlist.words):
+			for i in sorted(self.wordlist.items()):
 				self.table.Append(i)
 		self.statusbar.SetStatusText('Wordlist updated.')
 
