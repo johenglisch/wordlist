@@ -87,6 +87,9 @@ class MainWindow(wx.Frame):
 		wordlist	the wordlist
 	widgets:
 		filesave	menu entry: File -> Save...
+		viewbyword	menu entry: View -> Sort by beginning of word
+		viewbyend	menu entry: View -> Sort by end of word
+		viewbyfreq	menu entry: View -> Sort by frequency
 		toolsview	menu entry: Tools -> View text...
 		toolbar		the toolbar of the frame
 		tb_viewtext	toolbar button: view text
@@ -123,11 +126,11 @@ class MainWindow(wx.Frame):
 				'Quit the Wordlist programme')
 		menubar.Append(menufile, '&File')
 		menuview = wx.Menu()
-		viewbyword = menuview.AppendRadioItem(-1, 'Sort by beginning of &word\tCtrl-1',
+		self.viewbyword = menuview.AppendRadioItem(-1, 'Sort by beginning of &word\tCtrl-1',
 				'Sort the wordlist by the beginning of the words')
-		viewbyend = menuview.AppendRadioItem(-1 , 'Sort by &end of word\tCtrl-2',
+		self.viewbyend = menuview.AppendRadioItem(-1 , 'Sort by &end of word\tCtrl-2',
 				'Sort the wordlist by the end of the words')
-		viewbyfreq = menuview.AppendRadioItem(-1, 'Sort by &frequency\tCtrl-3',
+		self.viewbyfreq = menuview.AppendRadioItem(-1, 'Sort by &frequency\tCtrl-3',
 				'Sort the wordlist by the occurences of the words')
 		menubar.Append(menuview, '&View')
 		menutools = wx.Menu()
@@ -139,6 +142,9 @@ class MainWindow(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.on_open, fileopen)
 		self.Bind(wx.EVT_MENU, self.on_save, self.filesave)
 		self.Bind(wx.EVT_MENU, self.on_quit, filequit)
+		self.Bind(wx.EVT_MENU, self.on_sort, self.viewbyword)
+		self.Bind(wx.EVT_MENU, self.on_sort, self.viewbyend)
+		self.Bind(wx.EVT_MENU, self.on_sort, self.viewbyfreq)
 		self.Bind(wx.EVT_MENU, self.on_viewtext, self.toolsview)
 		# toolbar
 		self.toolbar = self.CreateToolBar()
@@ -162,8 +168,6 @@ class MainWindow(wx.Frame):
 		self.statusbar = self.CreateStatusBar()
 		# table
 		self.table = wx.ListCtrl(self, -1, style=wx.LC_REPORT)
-		self.table.InsertColumn(0, 'word')
-		self.table.InsertColumn(1, 'frequency')
 		# table drag'n'drop
 		droptarget = TableDND(self.table)
 		self.table.SetDropTarget(droptarget)
@@ -173,6 +177,14 @@ class MainWindow(wx.Frame):
 			self.toolsview.Enable(False)
 			self.toolbar.EnableTool(wx.ID_SAVE, False)
 			self.toolbar.EnableTool(self.tb_viewtext.GetId(), False)
+
+	def get_sorted(self):
+		'''return sorted word list'''
+		if self.viewbyend.IsChecked():
+			return self.wordlist.items_by_wordend()
+		if self.viewbyfreq.IsChecked():
+			return self.wordlist.most_common()
+		return sorted(self.wordlist.items())
 
 	def load_wordlist(self, filename):
 		'''load wordlist from file'''
@@ -209,6 +221,11 @@ class MainWindow(wx.Frame):
 			raise NotImplementedError('Saving files not implemented, yet')
 		dialog.Destroy()
 
+	def on_sort(self, event):
+		'''sort wordlist'''
+		self.update_table()
+
+
 	def on_quit(self, event):
 		'''quit programme'''
 		self.Close()
@@ -222,12 +239,18 @@ class MainWindow(wx.Frame):
 		else:
 			self.textview = ViewText(self.wordlist.text, self)
 
-	def update_table(self):
+	def update_table(self, sortbyend=False, sortbyfreq=False):
 		'''refill the table with the content of the wordlist'''
 		self.statusbar.SetStatusText('Updating wordlist...')
-		self.table.DeleteAllItems()
+		self.table.ClearAll()
 		if self.wordlist:
-			for i in sorted(self.wordlist.items()):
+			values = self.get_sorted()
+			align = wx.LIST_FORMAT_LEFT
+			if self.viewbyend.IsChecked():
+				align = wx.LIST_FORMAT_RIGHT
+			self.table.InsertColumn(0, 'word', align)
+			self.table.InsertColumn(1, 'frequency')
+			for i in values:
 				self.table.Append(i)
 		self.statusbar.SetStatusText('Wordlist updated.')
 
