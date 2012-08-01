@@ -97,7 +97,7 @@ def main(args):
 			cli.print_tabdelimited()
 	else:
 		wxapp = wx.App()
-		wlwx.MainWindow(filename, sortlistfiles, None)
+		wlwx.MainWindow(filename, stoplistfiles, None)
 		wxapp.MainLoop()
 
 
