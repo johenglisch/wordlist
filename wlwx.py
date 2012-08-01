@@ -113,7 +113,7 @@ class MainWindow(wx.Frame):
 		self.SetMenuBar(self.menubar)
 		# menu events
 		self.Bind(wx.EVT_MENU, self.on_open, fileopen)
-		self.Bidn(wx.EVT_MENU, self.on_save, filesave)
+		self.Bind(wx.EVT_MENU, self.on_save, filesave)
 		self.Bind(wx.EVT_MENU, self.on_quit, filequit)
 		self.Bind(wx.EVT_MENU, self.on_viewtext, toolsview)
 		# menu accelerators
@@ -134,6 +134,7 @@ class MainWindow(wx.Frame):
 				shortHelp='Open text file',
 				longHelp='Open a text file and create a wordlist from it')
 		tb_save = self.toolbar.AddLabelTool(wx.ID_SAVE, label='Save',
+				bitmap=wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE),
 				shortHelp='Save wordlist',
 				longHelp='Save the wordlist to a text file')
 		tb_viewtext = self.toolbar.AddLabelTool(wx.ID_ANY, label='View text',
