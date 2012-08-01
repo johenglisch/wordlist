@@ -10,7 +10,6 @@
 import os
 import sys
 import wx
-from wx.lib.mixins.listctrl import ColumnSorterMixin
 from wordlist import WordList
 
 class ViewText(wx.Frame):
@@ -73,7 +72,7 @@ class MainWindow(wx.Frame):
 		wordlist	the wordlist
 	'''
 
-	def __init__(self, filename, *args, **kwargs):
+	def __init__(self, filename, stoplists=None, *args, **kwargs):
 		wx.Frame.__init__(self, *args, **kwargs)
 		self.dirname = ''
 		self.filename = ''
