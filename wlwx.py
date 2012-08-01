@@ -89,13 +89,15 @@ class MainWindow(wx.Frame):
 		self.SetSize((350, 400))
 		self.SetTitle('Wordlist')
 		# menubar
-		menubar = wx.MenuBar()
+		self.menubar = wx.MenuBar()
 		menufile = wx.Menu()
 		fileopen = menufile.Append(wx.ID_OPEN, '&Open\tCtrl-O',
 				'Open a text file and create a wordlist from it')
+		filesave = menufile.Append(wx.ID_SAVE, '&Save\tCtrl-S',
+				'Save the wordlist to a text file')
 		filequit = menufile.Append(wx.ID_EXIT, '&Quit\tCtrl-Q',
 				'Quit the Wordlist programme')
-		menubar.Append(menufile, '&File')
+		self.menubar.Append(menufile, '&File')
 		menuview = wx.Menu()
 		viewbyword = menuview.AppendRadioItem(-1, 'Sort by beginning of &word\tCtrl-1',
 				'Sort the wordlist by the beginning of the words')
@@ -103,19 +105,21 @@ class MainWindow(wx.Frame):
 				'Sort the wordlist by the end of the words')
 		viewbyfreq = menuview.AppendRadioItem(-1, 'Sort by &frequency\tCtrl-3',
 				'Sort the wordlist by the occurences of the words')
-		menubar.Append(menuview, '&View')
+		self.menubar.Append(menuview, '&View')
 		menutools = wx.Menu()
 		toolsview = menutools.Append(-1, '&View text\tCtrl-T',
 				'View the text the wordlist was created from')
-		menubar.Append(menutools, '&Tools') 
-		self.SetMenuBar(menubar)
+		self.menubar.Append(menutools, '&Tools') 
+		self.SetMenuBar(self.menubar)
 		# menu events
 		self.Bind(wx.EVT_MENU, self.on_open, fileopen)
+		self.Bidn(wx.EVT_MENU, self.on_save, filesave)
 		self.Bind(wx.EVT_MENU, self.on_quit, filequit)
 		self.Bind(wx.EVT_MENU, self.on_viewtext, toolsview)
 		# menu accelerators
 		accelerators = wx.AcceleratorTable([
 			(wx.ACCEL_CTRL, ord('O'), wx.ID_OPEN),
+			(wx.ACCEL_CTRL, ord('S'), wx.ID_SAVE),
 			(wx.ACCEL_CTRL, ord('Q'), wx.ID_EXIT),
 			(wx.ACCEL_CTRL, ord('1'), viewbyword.GetId()),
 			(wx.ACCEL_CTRL, ord('2'), viewbyend.GetId()),
@@ -124,18 +128,22 @@ class MainWindow(wx.Frame):
 			])
 		self.SetAcceleratorTable(accelerators)
 		# toolbar
-		toolbar = self.CreateToolBar()
-		tb_open = toolbar.AddLabelTool(wx.ID_OPEN, label='Open',
+		self.toolbar = self.CreateToolBar()
+		tb_open = self.toolbar.AddLabelTool(wx.ID_OPEN, label='Open',
 				bitmap=wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN),
 				shortHelp='Open text file',
 				longHelp='Open a text file and create a wordlist from it')
-		self.Bind(wx.EVT_TOOL, self.on_open, tb_open)
-		tb_viewtext = toolbar.AddLabelTool(wx.ID_ANY, label='View text',
+		tb_save = self.toolbar.AddLabelTool(wx.ID_SAVE, label='Save',
+				shortHelp='Save wordlist',
+				longHelp='Save the wordlist to a text file')
+		tb_viewtext = self.toolbar.AddLabelTool(wx.ID_ANY, label='View text',
 				bitmap=wx.ArtProvider.GetBitmap(wx.ART_NORMAL_FILE),
 				shortHelp='View text',
 				longHelp='View the text the wordlist was created from')
+		self.Bind(wx.EVT_TOOL, self.on_open, tb_open)
+		self.Bind(wx.EVT_TOOL, self.on_save, tb_save)
 		self.Bind(wx.EVT_TOOL, self.on_viewtext, tb_viewtext)
-		toolbar.Realize()
+		self.toolbar.Realize()
 		# statusbar
 		self.statusbar = self.CreateStatusBar()
 		# table
@@ -158,10 +166,6 @@ class MainWindow(wx.Frame):
 		self.dirname = os.path.dirname(filename)
 		self.filename = os.path.basename(filename)
 
-	def on_quit(self, event):
-		'''quit programme'''
-		self.Close()
-
 	def on_open(self, event):
 		'''open a text file and generate wordlist'''
 		dialog = wx.FileDialog(self, message='', defaultDir=self.dirname,
@@ -171,6 +175,19 @@ class MainWindow(wx.Frame):
 			self.load_wordlist(dialog.GetPath())
 			self.update_table()
 		dialog.Destroy()
+
+	def on_save(self, event):
+		'''save wordlist to text file'''
+		dialog = wx.FileDialog(self, message='', defaultDir=self.dirname,
+				defaultFile=self.filename, wildcard='*', style=wx.SAVE)
+		answer = dialog.ShowModal()
+		if answer == wx.ID_OK:
+			raise NotImplementedError('Saving files not implemented, yet')
+		dialog.Destroy()
+
+	def on_quit(self, event):
+		'''quit programme'''
+		self.Close()
 
 	def on_viewtext(self, event):
 		'''view the text'''
