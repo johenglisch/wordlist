@@ -11,8 +11,8 @@ import os
 import sys
 import wx
 
-import wlcli
-import wlwx
+import ui.cli as cli
+import ui.mainwindow as mainwindow
 
 progname = os.path.basename(sys.argv[0])
 
@@ -97,7 +97,7 @@ def main(args):
 			cli.print_tabdelimited()
 	else:
 		wxapp = wx.App()
-		wlwx.MainWindow(filename, stoplistfiles, None)
+		mainwindow.MainWindow(filename, stoplistfiles, None)
 		wxapp.MainLoop()
 
 

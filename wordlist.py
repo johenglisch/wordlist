@@ -11,7 +11,7 @@ import re
 from collections import Counter
 
 
-class WordList(Counter):
+class Wordlist(Counter):
 	'''Counter subclass for creating a wordlist
 	
 	attributes:

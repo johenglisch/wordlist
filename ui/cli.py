@@ -8,7 +8,7 @@
 #########################################################################
 
 import re
-from wordlist import WordList
+from wordlist import Wordlist
 
 class CLI():
 	'''command line interface for the wordlist'''
@@ -24,7 +24,7 @@ class CLI():
 							L.lower())
 					self.stoplist.extend(L)
 		with open(filename, 'r') as f:
-			self.wordlist = WordList(unicode(f.read(), 'utf-8'),
+			self.wordlist = Wordlist(unicode(f.read(), 'utf-8'),
 					self.stoplist)
 		self.endsort = endsort
 		self.freqsort = freqsort

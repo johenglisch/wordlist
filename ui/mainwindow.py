@@ -1,63 +1,18 @@
 #!/usr/bin/env python2
 
 #########################################################################
-# programme	: wordlist-gui.py                                       #
-# description	: wxpython interface for wordlist                       #
-# last edit	: 31-Jul-2012                                           #
+# programme	: mainwindow.py                                         #
+# description	: main window of the wordlist gui                       #
+# last edit	: 02-Aug-2012                                           #
 #	by	: Johannes Englisch                                     #
 #########################################################################
 
+__all__ = ['MainWindow']
+
 import os
-import sys
 import wx
-from wordlist import WordList
-
-class ViewText(wx.Frame):
-	'''simple text viewer window
-	
-	attributes:
-		text		the text to be displayed
-		textctrl	the control displaying the text
-	'''
-
-	def __init__(self, text, *args, **kwargs):
-		wx.Frame.__init__(self, *args, **kwargs)
-		self.text = text
-		self.init_ui()
-		self.Show()
-		self.update_text()
-
-	def init_ui(self):
-		'''initialise user interface'''
-		self.SetTitle('View text')
-		self.SetSize((300, 300))
-		# menubar
-		menubar = wx.MenuBar()
-		menufile = wx.Menu()
-		fileclose = menufile.Append(wx.ID_CLOSE, '&Close\tCtrl-W',
-				'Close text view window')
-		filequit = menufile.Append(wx.ID_EXIT, '&Quit\tCtrl-Q',
-				'Quit the Wordlist programme')
-		menubar.Append(menufile, '&File')
-		self.SetMenuBar(menubar)
-		self.Bind(wx.EVT_MENU, self.on_close, fileclose)
-		self.Bind(wx.EVT_MENU, self.on_quit, filequit)
-		# text view
-		self.textctrl = wx.TextCtrl(self, style=wx.TE_MULTILINE)
-		self.textctrl.SetEditable(False)
-
-	def on_close(self, event):
-		'''close current frame'''
-		self.Close()
-
-	def on_quit(self, event):
-		'''quit programme'''
-		self.GetParent().Close()
-
-	def update_text(self):
-		'''update text field'''
-		self.textctrl.SetValue(self.text)
-
+from wordlist import Wordlist
+from textview import TextView
 
 class StoplistDlg(wx.Dialog):
 	'''dialogue for editing the stoplist
@@ -121,7 +76,7 @@ class MainWindow(wx.Frame):
 		tb_viewtext	toolbar button: view text
 		table		the table showing the wordlist
 		statusbar	the statusbar widget
-		textview	the ViewText window
+		textview	the TextView window
 	'''
 
 	def __init__(self, filename, stoplists=None, *args, **kwargs):
@@ -249,7 +204,7 @@ class MainWindow(wx.Frame):
 			self.statusbar.SetStatusText('Reading data from file...')
 		with open(filename, 'r') as f:
 			text = unicode(f.read(), 'utf-8')
-		self.wordlist = WordList(text)
+		self.wordlist = Wordlist(text)
 		if self.statusbar:
 			self.statusbar.SetStatusText('Data read.')
 		self.dirname = os.path.dirname(filename)
@@ -314,7 +269,7 @@ class MainWindow(wx.Frame):
 			self.textview.update_text()
 			self.textview.SetFocus()
 		else:
-			self.textview = ViewText(self.wordlist.text, self)
+			self.textview = TextView(self.wordlist.text, self)
 
 	def update_table(self, sortbyend=False, sortbyfreq=False):
 		'''refill the table with the content of the wordlist'''
