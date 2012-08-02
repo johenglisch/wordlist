@@ -31,8 +31,54 @@ class TableDND(wx.FileDropTarget):
 		'''load wordlist on file drop'''
 		if len(filenames) > 1:
 			return
-		self.window.GetParent().load_wordlist(filenames[0])
-		self.window.GetParent().update_table()
+		self.window.parent.load_wordlist(filenames[0])
+		self.window.update(self.window.parent.wordlist)
+
+
+class WordlistTable(wx.ListCtrl):
+	'''table for displaying the wordlist
+
+	attributes:
+		sortbyend	sort wordlist by word ends?
+		sortbyfreq	sort wordlist by frequency?
+		parent		the parent window
+		wordlist	the wordlist to be displayed
+	'''
+
+	def __init__(self, parent, *args, **kwargs):
+		wx.ListCtrl.__init__(self, parent, *args, **kwargs)
+		self.parent = parent
+		self.wordlist = None
+		self.sortbyend = False
+		self.sortbyfreq = False
+		# drag'n'drop support
+		droptarget = TableDND(self)
+		self.SetDropTarget(droptarget)
+
+	def get_sorted(self):
+		'''return sorted content of the wordlist'''
+		if self.sortbyfreq:
+			return self.wordlist.most_common()
+		if self.sortbyend:
+			return self.wordlist.items_by_wordend()
+		return sorted(self.wordlist.items())
+
+	def update(self, wordlist = None):
+		'''refill the table with the content of the wordlist'''
+		if wordlist:
+			self.wordlist = wordlist
+		self.parent.SetStatusText('Updating wordlist...')
+		self.ClearAll()
+		if self.wordlist:
+			values = self.get_sorted()
+			align = wx.LIST_FORMAT_LEFT
+			if self.sortbyend:
+				align = wx.LIST_FORMAT_RIGHT
+			self.InsertColumn(0, 'word', align)
+			self.InsertColumn(1, 'frequency')
+			for i in values:
+				self.Append(i)
+		self.parent.SetStatusText('Wordlist updated.')
 
 
 class MainWindow(wx.Frame):
@@ -51,7 +97,6 @@ class MainWindow(wx.Frame):
 		toolbar		the toolbar of the frame
 		tb_viewtext	toolbar button: view text
 		table		the table showing the wordlist
-		statusbar	the statusbar widget
 		textview	the TextView window
 	'''
 
@@ -59,7 +104,6 @@ class MainWindow(wx.Frame):
 		wx.Frame.__init__(self, *args, **kwargs)
 		self.dirname = ''
 		self.filename = ''
-		self.statusbar = None
 		self.textview = None
 		self.init_ui()
 		self.wordlist = None
@@ -68,7 +112,7 @@ class MainWindow(wx.Frame):
 		else:
 			self.disable_controls()
 		self.Show()
-		self.update_table()
+		self.table.update(self.wordlist)
 
 	def init_ui(self):
 		'''initialise user interface'''
@@ -135,12 +179,9 @@ class MainWindow(wx.Frame):
 		self.Bind(wx.EVT_TOOL, self.on_viewtext, self.tb_viewtext)
 		self.toolbar.Realize()
 		# statusbar
-		self.statusbar = self.CreateStatusBar()
+		self.CreateStatusBar()
 		# table
-		self.table = wx.ListCtrl(self, -1, style=wx.LC_REPORT)
-		# table drag'n'drop
-		droptarget = TableDND(self.table)
-		self.table.SetDropTarget(droptarget)
+		self.table = WordlistTable(self, -1, style=wx.LC_REPORT)
 
 	def disable_controls(self):
 		'''disable controls'''
@@ -165,36 +206,26 @@ class MainWindow(wx.Frame):
 		self.toolbar.EnableTool(wx.ID_SAVE, True)
 		self.toolbar.EnableTool(self.tb_viewtext.GetId(), True)
 
-	def get_sorted(self):
-		'''return sorted word list'''
-		if self.viewbyend.IsChecked():
-			return self.wordlist.items_by_wordend()
-		if self.viewbyfreq.IsChecked():
-			return self.wordlist.most_common()
-		return sorted(self.wordlist.items())
-
 	def load_wordlist(self, filename):
 		'''load wordlist from file'''
 		filename = os.path.abspath(filename)
-		if self.statusbar:
-			self.statusbar.SetStatusText('Reading data from file...')
+		self.SetStatusText('Reading data from file...')
 		with open(filename, 'r') as f:
 			text = unicode(f.read(), 'utf-8')
 		self.wordlist = Wordlist(text)
-		if self.statusbar:
-			self.statusbar.SetStatusText('Data read.')
+		self.SetStatusText('Data read.')
 		self.dirname = os.path.dirname(filename)
 		self.filename = os.path.basename(filename)
 		self.enable_controls()
 
-	def on_open(self, event):
+	def on_open(self, event, filename=''):
 		'''open a text file and generate wordlist'''
 		dialog = wx.FileDialog(self, message='', defaultDir=self.dirname,
 				defaultFile=self.filename, wildcard='*', style=wx.OPEN)
 		answer = dialog.ShowModal()
 		if answer == wx.ID_OK:
 			self.load_wordlist(dialog.GetPath())
-			self.update_table()
+			self.table.update(self.wordlist)
 		dialog.Destroy()
 
 	def on_save(self, event):
@@ -213,16 +244,18 @@ class MainWindow(wx.Frame):
 				msg.Destroy()
 				if confirm != wx.ID_YES:
 					return
-			self.statusbar.SetStatusText('Saving file...')
+			self.SetStatusText('Saving file...')
 			tab = ['{0}\t{1}\r\n'.format(w.encode('utf-8'), f)
-					for w, f in self.get_sorted()]
+					for w, f in self.table.get_sorted()]
 			with open(filename, 'w') as f:
 				f.writelines(tab)
-			self.statusbar.SetStatusText('File saved.')
+			self.SetStatusText('File saved.')
 
 	def on_sort(self, event):
 		'''sort wordlist'''
-		self.update_table()
+		self.table.sortbyend = self.viewbyend.IsChecked()
+		self.table.sortbyfreq = self.viewbyfreq.IsChecked()
+		self.table.update()
 
 	def on_stoplist(self, event):
 		'''open 'edit stoplist' dialogue'''
@@ -246,20 +279,5 @@ class MainWindow(wx.Frame):
 			self.textview.SetFocus()
 		else:
 			self.textview = TextView(self.wordlist.text, self)
-
-	def update_table(self, sortbyend=False, sortbyfreq=False):
-		'''refill the table with the content of the wordlist'''
-		self.statusbar.SetStatusText('Updating wordlist...')
-		self.table.ClearAll()
-		if self.wordlist:
-			values = self.get_sorted()
-			align = wx.LIST_FORMAT_LEFT
-			if self.viewbyend.IsChecked():
-				align = wx.LIST_FORMAT_RIGHT
-			self.table.InsertColumn(0, 'word', align)
-			self.table.InsertColumn(1, 'frequency')
-			for i in values:
-				self.table.Append(i)
-		self.statusbar.SetStatusText('Wordlist updated.')
 
 
