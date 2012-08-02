@@ -59,6 +59,32 @@ class ViewText(wx.Frame):
 		self.textctrl.SetValue(self.text)
 
 
+class StoplistDlg(wx.Dialog):
+	'''dialogue for editing the stoplist
+	
+	attributes:
+		stoplist	the stoplist
+		textctrl	the control displaying the stoplist
+	'''
+
+	def __init__(self, stoplist, *args, **kwargs):
+		wx.Dialog.__init__(self, *args, **kwargs)
+		self.init_ui()
+	
+	def init_ui(self):
+		self.textctrl = wx.TextCtrl(self, style = wx.TE_MULTILINE)
+		hbox = wx.BoxSizer(wx.HORIZONTAL)
+		hbox.Add(wx.Button(self, wx.ID_OPEN, '&Open from file...'))
+		hbox.Add(wx.Button(self, wx.ID_OK, 'O&k'))
+		hbox.Add(wx.Button(self, wx.ID_CANCEL, '&Close'))
+		vbox = wx.BoxSizer(wx.VERTICAL)
+		vbox.Add(wx.StaticText(self, id = -1, label = 'Edit stoplist:'))
+		vbox.Add(self.textctrl, flag = wx.EXPAND)
+		vbox.Add(hbox, flag = wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT)
+		self.SetSizer(vbox)
+		self.SetSize(self.GetBestSize())
+
+
 class TableDND(wx.FileDropTarget):
 	'''make wordlist table a target for file drag'n'drop
 
@@ -120,23 +146,33 @@ class MainWindow(wx.Frame):
 		# menubar
 		menubar = wx.MenuBar()
 		menufile = wx.Menu()
-		fileopen = menufile.Append(wx.ID_OPEN, '&Open...\tCtrl-O',
+		fileopen = menufile.Append(wx.ID_OPEN,
+				'&Open...\tCtrl-O',
 				'Open a text file and create a wordlist from it')
-		self.filesave = menufile.Append(wx.ID_SAVE, '&Save...\tCtrl-S',
+		self.filesave = menufile.Append(wx.ID_SAVE,
+				'&Save...\tCtrl-S',
 				'Save the wordlist to a text file')
-		filequit = menufile.Append(wx.ID_EXIT, '&Quit\tCtrl-Q',
+		filequit = menufile.Append(wx.ID_EXIT,
+				'&Quit\tCtrl-Q',
 				'Quit the Wordlist programme')
 		menubar.Append(menufile, '&File')
 		menuview = wx.Menu()
-		self.viewbyword = menuview.AppendRadioItem(-1, 'Sort by beginning of &word\tCtrl-1',
+		self.viewbyword = menuview.AppendRadioItem(-1,
+				'Sort by beginning of &word\tCtrl-1',
 				'Sort the wordlist by the beginning of the words')
-		self.viewbyend = menuview.AppendRadioItem(-1 , 'Sort by &end of word\tCtrl-2',
+		self.viewbyend = menuview.AppendRadioItem(-1 ,
+				'Sort by &end of word\tCtrl-2',
 				'Sort the wordlist by the end of the words')
-		self.viewbyfreq = menuview.AppendRadioItem(-1, 'Sort by &frequency\tCtrl-3',
+		self.viewbyfreq = menuview.AppendRadioItem(-1,
+				'Sort by &frequency\tCtrl-3',
 				'Sort the wordlist by the occurences of the words')
 		menubar.Append(menuview, '&View')
 		menutools = wx.Menu()
-		self.toolsview = menutools.Append(-1, '&View text...\tCtrl-T',
+		self.toolsstoplist = menutools.Append(-1,
+				'Edit &Stoplist...\tCtrl-E',
+				'Edit the stoplist')
+		self.toolsview = menutools.Append(-1,
+				'&View text...\tCtrl-T',
 				'View the text the wordlist was created from')
 		menubar.Append(menutools, '&Tools') 
 		self.SetMenuBar(menubar)
@@ -148,6 +184,7 @@ class MainWindow(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.on_sort, self.viewbyend)
 		self.Bind(wx.EVT_MENU, self.on_sort, self.viewbyfreq)
 		self.Bind(wx.EVT_MENU, self.on_viewtext, self.toolsview)
+		self.Bind(wx.EVT_MENU, self.on_stoplist, self.toolsstoplist)
 		# toolbar
 		self.toolbar = self.CreateToolBar()
 		tb_open = self.toolbar.AddLabelTool(wx.ID_OPEN, label='Open',
@@ -177,21 +214,23 @@ class MainWindow(wx.Frame):
 	def disable_controls(self):
 		'''disable controls'''
 		self.filesave.Enable(False)
-		self.toolsview.Enable(False)
 		self.viewbyword.Check(True)
 		self.viewbyword.Enable(False)
 		self.viewbyend.Enable(False)
 		self.viewbyfreq.Enable(False)
+		self.toolsstoplist.Enable(False)
+		self.toolsview.Enable(False)
 		self.toolbar.EnableTool(wx.ID_SAVE, False)
 		self.toolbar.EnableTool(self.tb_viewtext.GetId(), False)
 
 	def enable_controls(self):
 		'''enable controls'''
 		self.filesave.Enable(True)
-		self.toolsview.Enable(True)
 		self.viewbyword.Enable(True)
 		self.viewbyend.Enable(True)
 		self.viewbyfreq.Enable(True)
+		self.toolsstoplist.Enable(True)
+		self.toolsview.Enable(True)
 		self.toolbar.EnableTool(wx.ID_SAVE, True)
 		self.toolbar.EnableTool(self.tb_viewtext.GetId(), True)
 
@@ -254,6 +293,16 @@ class MainWindow(wx.Frame):
 		'''sort wordlist'''
 		self.update_table()
 
+	def on_stoplist(self, event):
+		'''open 'edit stoplist' dialogue'''
+		dialog = StoplistDlg(self.wordlist.stoplist, self)
+		response = dialog.ShowModal()
+		if response == wx.ID_OK:
+			print 'OK'
+		if response == wx.ID_CANCEL:
+			print 'Close'
+		dialog.Destroy()
+
 	def on_quit(self, event):
 		'''quit programme'''
 		self.Close()
@@ -281,18 +330,5 @@ class MainWindow(wx.Frame):
 			for i in values:
 				self.table.Append(i)
 		self.statusbar.SetStatusText('Wordlist updated.')
-
-
-def main(args):
-	filename = ''
-	if len(args) > 1:
-		filename = args[1]
-	app = wx.App()
-	MainWindow(filename, None)
-	app.MainLoop()
-
-
-if __name__ == "__main__":
-	main(sys.argv)
 
 
