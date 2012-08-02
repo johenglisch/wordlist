@@ -103,11 +103,13 @@ class MainWindow(wx.Frame):
 		self.dirname = ''
 		self.filename = ''
 		self.statusbar = None
+		self.textview = None
+		self.init_ui()
 		self.wordlist = None
 		if filename:
 			self.load_wordlist(filename)
-		self.textview = None
-		self.init_ui()
+		else:
+			self.disable_controls()
 		self.Show()
 		self.update_table()
 
@@ -171,9 +173,6 @@ class MainWindow(wx.Frame):
 		# table drag'n'drop
 		droptarget = TableDND(self.table)
 		self.table.SetDropTarget(droptarget)
-		# disable controls if there is no wordlist
-		if not self.wordlist:
-			self.disable_controls()
 
 	def disable_controls(self):
 		'''disable controls'''
@@ -206,6 +205,7 @@ class MainWindow(wx.Frame):
 
 	def load_wordlist(self, filename):
 		'''load wordlist from file'''
+		filename = os.path.abspath(filename)
 		if self.statusbar:
 			self.statusbar.SetStatusText('Reading data from file...')
 		with open(filename, 'r') as f:
@@ -232,14 +232,27 @@ class MainWindow(wx.Frame):
 		dialog = wx.FileDialog(self, message='', defaultDir=self.dirname,
 				defaultFile='', wildcard='*', style=wx.SAVE)
 		answer = dialog.ShowModal()
-		if answer == wx.ID_OK:
-			raise NotImplementedError('Saving files not implemented, yet')
+		filename = dialog.GetPath()
 		dialog.Destroy()
+		if answer == wx.ID_OK:
+			if os.path.isfile(filename):
+				msg = wx.MessageDialog(self,
+						message = 'The file \'{0}\' already exists. Overwrite?'.format(filename),
+						style = wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+				confirm = msg.ShowModal()
+				msg.Destroy()
+				if confirm != wx.ID_YES:
+					return
+			self.statusbar.SetStatusText('Saving file...')
+			tab = ['{0}\t{1}\r\n'.format(w.encode('utf-8'), f)
+					for w, f in self.get_sorted()]
+			with open(filename, 'w') as f:
+				f.writelines(tab)
+			self.statusbar.SetStatusText('File saved.')
 
 	def on_sort(self, event):
 		'''sort wordlist'''
 		self.update_table()
-
 
 	def on_quit(self, event):
 		'''quit programme'''
