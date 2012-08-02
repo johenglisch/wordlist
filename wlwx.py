@@ -173,10 +173,28 @@ class MainWindow(wx.Frame):
 		self.table.SetDropTarget(droptarget)
 		# disable controls if there is no wordlist
 		if not self.wordlist:
-			self.filesave.Enable(False)
-			self.toolsview.Enable(False)
-			self.toolbar.EnableTool(wx.ID_SAVE, False)
-			self.toolbar.EnableTool(self.tb_viewtext.GetId(), False)
+			self.disable_controls()
+
+	def disable_controls(self):
+		'''disable controls'''
+		self.filesave.Enable(False)
+		self.toolsview.Enable(False)
+		self.viewbyword.Check(True)
+		self.viewbyword.Enable(False)
+		self.viewbyend.Enable(False)
+		self.viewbyfreq.Enable(False)
+		self.toolbar.EnableTool(wx.ID_SAVE, False)
+		self.toolbar.EnableTool(self.tb_viewtext.GetId(), False)
+
+	def enable_controls(self):
+		'''enable controls'''
+		self.filesave.Enable(True)
+		self.toolsview.Enable(True)
+		self.viewbyword.Enable(True)
+		self.viewbyend.Enable(True)
+		self.viewbyfreq.Enable(True)
+		self.toolbar.EnableTool(wx.ID_SAVE, True)
+		self.toolbar.EnableTool(self.tb_viewtext.GetId(), True)
 
 	def get_sorted(self):
 		'''return sorted word list'''
@@ -197,10 +215,7 @@ class MainWindow(wx.Frame):
 			self.statusbar.SetStatusText('Data read.')
 		self.dirname = os.path.dirname(filename)
 		self.filename = os.path.basename(filename)
-		self.filesave.Enable(True)
-		self.toolsview.Enable(True)
-		self.toolbar.EnableTool(wx.ID_SAVE, True)
-		self.toolbar.EnableTool(self.tb_viewtext.GetId(), True)
+		self.enable_controls()
 
 	def on_open(self, event):
 		'''open a text file and generate wordlist'''
