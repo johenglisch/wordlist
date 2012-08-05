@@ -9,6 +9,7 @@
 
 import os
 import re
+regex = re.compile('\w+', re.UNICODE)
 import wx
 
 class StoplistDlg(wx.Dialog):
@@ -50,8 +51,7 @@ class StoplistDlg(wx.Dialog):
 
 	def on_ok(self, event):
 		'''OK button applies stoplist changes and closes dialogue'''
-		self.stoplist = re.findall('(?u)\w+',
-				self.textctrl.GetValue())
+		self.stoplist = regex.findall(self.textctrl.GetValue())
 		self.EndModal(wx.ID_OK)
 
 	def on_open(self, event):
@@ -68,7 +68,7 @@ class StoplistDlg(wx.Dialog):
 		if response == wx.ID_OK:
 			with open(path, 'r') as f:
 				content = unicode(f.read(), 'utf-8')
-				content = re.findall('(?u)\w+', content)
+				content = regex.findall(content)
 				self.textctrl.WriteText('\n'.join(content))
 		dialog.Destroy()
 
@@ -92,7 +92,7 @@ class StoplistDlg(wx.Dialog):
 				msg.Destroy()
 				if confirm != wx.ID_YES:
 					return
-			content = re.findall('(?u)\w+', self.textctrl.GetValue())
+			content = regex.findall(self.textctrl.GetValue())
 			content = ['{0}\r\n'.format(s) for s in content]
 			with open(path, 'w') as f:
 				f.writelines(content)
