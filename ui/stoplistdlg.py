@@ -7,6 +7,7 @@
 #	by	: Johannes Englisch                                     #
 #########################################################################
 
+import os
 import re
 import wx
 
@@ -34,7 +35,7 @@ class StoplistDlg(wx.Dialog):
 		vbox.Add(self.textctrl, flag = wx.EXPAND)
 		# buttons
 		hbox = wx.BoxSizer(wx.HORIZONTAL)
-		butopen = wx.Button(self, wx.ID_OPEN, 'O&pen...')
+		butopen = wx.Button(self, wx.ID_OPEN, '&Add from file...')
 		butsave = wx.Button(self, wx.ID_SAVE, '&Save...')
 		butok = wx.Button(self, wx.ID_OK, '&Ok')
 		butcancel = wx.Button(self, wx.ID_CANCEL, '&Close')
@@ -55,10 +56,45 @@ class StoplistDlg(wx.Dialog):
 
 	def on_open(self, event):
 		'''Open button reads stoplist from file'''
-		pass
+		dialog = wx.FileDialog(self,
+				message = '',
+				defaultDir = self.parent.dirname,
+				defaultFile = '',
+				wildcard = '*',
+				style = wx.OPEN)
+		response = dialog.ShowModal()
+		path = dialog.GetPath()
+		dialog.Destroy()
+		if response == wx.ID_OK:
+			with open(path, 'r') as f:
+				content = unicode(f.read(), 'utf-8')
+				content = re.findall('(?u)\w+', content)
+				self.textctrl.WriteText('\n'.join(content))
+		dialog.Destroy()
 
 	def on_save(self, event):
 		'''Save button saves current stoplist to file'''
-		pass
+		dialog = wx.FileDialog(self,
+				message='',
+				defaultDir = self.parent.dirname,
+				defaultFile = '',
+				wildcard = '*',
+				style = wx.SAVE)
+		response = dialog.ShowModal()
+		path = dialog.GetPath()
+		dialog.Destroy()
+		if response == wx.ID_OK:
+			if os.path.isfile(path):
+				msg = wx.MessageDialog(self,
+						message = 'The file {0} already exists. Overwrite?'.format(path),
+						style = wx.YES_NO | wx.NO_DEFAULT | wx.ICON_QUESTION)
+				confirm = msg.ShowModal()
+				msg.Destroy()
+				if confirm != wx.ID_YES:
+					return
+			content = re.findall('(?u)\w+', self.textctrl.GetValue())
+			content = ['{0}\r\n'.format(s) for s in content]
+			with open(path, 'w') as f:
+				f.writelines(content)
 
 
