@@ -262,9 +262,8 @@ class MainWindow(wx.Frame):
 		dialog = StoplistDlg(self.wordlist.stoplist, self)
 		response = dialog.ShowModal()
 		if response == wx.ID_OK:
-			print 'OK'
-		if response == wx.ID_CANCEL:
-			print 'Close'
+			self.wordlist = Wordlist(self.wordlist.text, dialog.stoplist)
+			self.table.update(self.wordlist)
 		dialog.Destroy()
 
 	def on_quit(self, event):
