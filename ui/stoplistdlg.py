@@ -33,6 +33,7 @@ class StoplistDlg(wx.Dialog):
 		vbox.Add(wx.StaticText(self, id = -1, label = 'Edit stoplist:'))
 		# text control
 		self.textctrl = wx.TextCtrl(self, style = wx.TE_MULTILINE)
+		self.textctrl.SetMinSize((250, 160))
 		vbox.Add(self.textctrl, flag = wx.EXPAND)
 		# buttons
 		hbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -43,7 +44,7 @@ class StoplistDlg(wx.Dialog):
 		hbox.AddMany([butopen, butsave, butok, butcancel])
 		vbox.Add(hbox, flag = wx.ALIGN_BOTTOM | wx.ALIGN_RIGHT)
 		self.SetSizer(vbox)
-		self.SetSize(self.GetBestSize())
+		self.Fit()
 		# events
 		butopen.Bind(wx.EVT_BUTTON, self.on_open)
 		butsave.Bind(wx.EVT_BUTTON, self.on_save)
