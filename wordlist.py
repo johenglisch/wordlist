@@ -9,7 +9,6 @@
 
 import os
 import sys
-import ui.cli as cli
 
 forcecli = False
 try:
@@ -17,8 +16,8 @@ try:
 except ImportError, error:
 	print 'wxPython not found. Forcing command-line mode'
 	forcecli = True
-if not forcecli:
-	import ui.mainwindow as mainwindow
+
+import ui
 
 progname = os.path.basename(sys.argv[0])
 
@@ -96,14 +95,14 @@ def main(args):
 			print 'No text file given'
 			usage()
 			return
-		cli = wlcli.CLI(filename, stoplistfiles, freqsort, endsort)
+		cli = ui.cli.CLI(filename, stoplistfiles, freqsort, endsort)
 		if tabdelimited:
 			cli.print_tabdelimited()
 		else:
 			cli.print_table()
 	else:
 		wxapp = wx.App()
-		mainwindow.MainWindow(filename, stoplistfiles, None)
+		ui.mainwindow.MainWindow(filename, stoplistfiles, None)
 		wxapp.MainLoop()
 
 

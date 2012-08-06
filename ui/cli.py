@@ -8,7 +8,7 @@
 #########################################################################
 
 import re
-from wordlist-class import Wordlist
+from wl import Wordlist
 
 class CLI():
 	'''command line interface for the wordlist'''

@@ -1,9 +1,9 @@
 #!/usr/bin/env python2
 
 #########################################################################
-# programme	: wordlist                                              #
+# programme	: wl.py                                                 #
 # description	: class of a wordlist                                   #
-# last edit	: 27-Jul-2012                                           #
+# last edit	: 06-Aug-2012                                           #
 #	by	: Johannes Englisch                                     #
 #########################################################################
 
