@@ -53,6 +53,7 @@ class StoplistDlg(wx.Dialog):
 	def on_ok(self, event):
 		'''OK button applies stoplist changes and closes dialogue'''
 		self.stoplist = regex.findall(self.textctrl.GetValue())
+		self.stoplist = [s.lower() for s in self.stoplist]
 		self.EndModal(wx.ID_OK)
 
 	def on_open(self, event):
@@ -94,7 +95,8 @@ class StoplistDlg(wx.Dialog):
 				if confirm != wx.ID_YES:
 					return
 			content = regex.findall(self.textctrl.GetValue())
-			content = ['{0}\r\n'.format(s) for s in content]
+			content = ['{0}\r\n'.format(s.encode('utf-8'))
+					for s in content]
 			with open(path, 'w') as f:
 				f.writelines(content)
 
