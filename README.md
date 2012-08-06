@@ -1,7 +1,7 @@
 Wordlist
 ========
 
-#Description
+##Description
 
 `Wordlist` is a python script that generates word list from any given
 plain text file.
@@ -15,12 +15,12 @@ Also the script supports wordlist filtering using stoplists.
 The script comes with a graphical user interface, but can also be used on the
 command-line.
 
-#Requirements
+##Requirements
 
  * The script requires at least Python 2.7.
  * The graphical user interface requires wxPython (optional).
 
-#Usage
+##Usage
 
     wordlist.py [options] file
 
