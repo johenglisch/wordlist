@@ -127,26 +127,35 @@ class MainWindow(wx.Frame):
 		self.filesave = menufile.Append(wx.ID_SAVE,
 				'&Save...\tCtrl-S',
 				'Save the wordlist to a text file')
+		menufile.AppendSeparator()
 		filequit = menufile.Append(wx.ID_EXIT,
 				'&Quit\tCtrl-Q',
 				'Quit the Wordlist programme')
 		menubar.Append(menufile, '&File')
+		menuedit = wx.Menu()
+		self.editfind = menuedit.Append(wx.ID_FIND,
+				'&Find...\tCtrl-F',
+				'Search for a word in the wordlist')
+		self.editfindnext = menuedit.Append(wx.ID_ANY,
+				'Find ne&xt\tCtrl-G',
+				'Show next result of the search')
+		menubar.Append(menuedit, '&Edit')
 		menuview = wx.Menu()
-		self.viewbyword = menuview.AppendRadioItem(-1,
+		self.viewbyword = menuview.AppendRadioItem(wx.ID_ANY,
 				'Sort by beginning of &word\tCtrl-1',
 				'Sort the wordlist by the beginning of the words')
-		self.viewbyend = menuview.AppendRadioItem(-1 ,
+		self.viewbyend = menuview.AppendRadioItem(wx.ID_ANY ,
 				'Sort by &end of word\tCtrl-2',
 				'Sort the wordlist by the end of the words')
-		self.viewbyfreq = menuview.AppendRadioItem(-1,
+		self.viewbyfreq = menuview.AppendRadioItem(wx.ID_ANY,
 				'Sort by &frequency\tCtrl-3',
 				'Sort the wordlist by the occurences of the words')
 		menubar.Append(menuview, '&View')
 		menutools = wx.Menu()
-		self.toolsstoplist = menutools.Append(-1,
+		self.toolsstoplist = menutools.Append(wx.ID_ANY,
 				'Edit &Stoplist...\tCtrl-E',
 				'Edit the stoplist')
-		self.toolsview = menutools.Append(-1,
+		self.toolsview = menutools.Append(wx.ID_ANY,
 				'&View text...\tCtrl-T',
 				'View the text the wordlist was created from')
 		menubar.Append(menutools, '&Tools') 
@@ -181,7 +190,7 @@ class MainWindow(wx.Frame):
 		# statusbar
 		self.CreateStatusBar()
 		# table
-		self.table = WordlistTable(self, -1, style=wx.LC_REPORT)
+		self.table = WordlistTable(self, wx.ID_ANY, style=wx.LC_REPORT)
 
 	def disable_controls(self):
 		'''disable controls'''
@@ -217,6 +226,10 @@ class MainWindow(wx.Frame):
 		self.dirname = os.path.dirname(filename)
 		self.filename = os.path.basename(filename)
 		self.enable_controls()
+
+	def on_copy(self, event):
+		'''copy selected content to clipboard'''
+		text = self.table.Copy()
 
 	def on_open(self, event, filename=''):
 		'''open a text file and generate wordlist'''
