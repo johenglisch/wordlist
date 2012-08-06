@@ -28,28 +28,9 @@ class TextView(wx.Frame):
 		'''initialise user interface'''
 		self.SetTitle('View text')
 		self.SetSize((300, 300))
-		# menubar
-		menubar = wx.MenuBar()
-		menufile = wx.Menu()
-		fileclose = menufile.Append(wx.ID_CLOSE, '&Close\tCtrl-W',
-				'Close text view window')
-		filequit = menufile.Append(wx.ID_EXIT, '&Quit\tCtrl-Q',
-				'Quit the Wordlist programme')
-		menubar.Append(menufile, '&File')
-		self.SetMenuBar(menubar)
-		self.Bind(wx.EVT_MENU, self.on_close, fileclose)
-		self.Bind(wx.EVT_MENU, self.on_quit, filequit)
 		# text view
 		self.textctrl = wx.TextCtrl(self, style=wx.TE_MULTILINE)
 		self.textctrl.SetEditable(False)
-
-	def on_close(self, event):
-		'''close current frame'''
-		self.Close()
-
-	def on_quit(self, event):
-		'''quit programme'''
-		self.GetParent().Close()
 
 	def update_text(self):
 		'''update text field'''
