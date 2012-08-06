@@ -107,7 +107,8 @@ class WordlistTable(wx.ListCtrl):
 			if self.sortbyend:
 				align = wx.LIST_FORMAT_RIGHT
 			self.InsertColumn(0, 'word', align)
-			self.InsertColumn(1, 'frequency')
+			self.InsertColumn(1, 'frequency',
+					wx.LIST_FORMAT_RIGHT)
 			for i in values:
 				self.Append(i)
 		self.parent.SetStatusText('Wordlist updated.')
