@@ -207,20 +207,29 @@ class MainWindow(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.on_stoplist, self.toolsstoplist)
 		# toolbar
 		self.toolbar = self.CreateToolBar()
-		tb_open = self.toolbar.AddLabelTool(wx.ID_OPEN, label='Open',
-				bitmap=wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN),
+		tb_open = self.toolbar.AddLabelTool(wx.ID_OPEN,
+				label='Open',
+				bitmap=wx.ArtProvider.GetBitmap(wx.ART_FILE_OPEN, wx.ART_TOOLBAR),
 				shortHelp='Open text file',
 				longHelp='Open a text file and create a wordlist from it')
 		tb_save = self.toolbar.AddLabelTool(wx.ID_SAVE, label='Save',
-				bitmap=wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE),
+				bitmap=wx.ArtProvider.GetBitmap(wx.ART_FILE_SAVE, wx.ART_TOOLBAR),
 				shortHelp='Save wordlist',
 				longHelp='Save the wordlist to a text file')
-		self.tb_viewtext = self.toolbar.AddLabelTool(wx.ID_ANY, label='View text',
-				bitmap=wx.ArtProvider.GetBitmap(wx.ART_NORMAL_FILE),
-				shortHelp='View text',
-				longHelp='View the text the wordlist was created from')
+		self.toolbar.AddSeparator()
+		self.tb_stoplist = self.toolbar.AddLabelTool(wx.ID_ANY,
+				label = 'Edit stoplist',
+				bitmap = wx.ArtProvider.GetBitmap(wx.ART_LIST_VIEW, wx.ART_TOOLBAR),
+				shortHelp = 'Edit stoplist',
+				longHelp = 'Edit the stop list in a new window')
+		self.tb_viewtext = self.toolbar.AddLabelTool(wx.ID_ANY,
+				label='View text',
+				bitmap = wx.ArtProvider.GetBitmap(wx.ART_NORMAL_FILE, wx.ART_TOOLBAR),
+				shortHelp = 'View text',
+				longHelp = 'View the text the wordlist was created from')
 		self.Bind(wx.EVT_TOOL, self.on_open, tb_open)
 		self.Bind(wx.EVT_TOOL, self.on_save, tb_save)
+		self.Bind(wx.EVT_TOOL, self.on_stoplist, self.tb_stoplist)
 		self.Bind(wx.EVT_TOOL, self.on_viewtext, self.tb_viewtext)
 		self.toolbar.Realize()
 		# statusbar
@@ -240,6 +249,7 @@ class MainWindow(wx.Frame):
 		self.toolsstoplist.Enable(False)
 		self.toolsview.Enable(False)
 		self.toolbar.EnableTool(wx.ID_SAVE, False)
+		self.toolbar.EnableTool(self.tb_stoplist.GetId(), False)
 		self.toolbar.EnableTool(self.tb_viewtext.GetId(), False)
 
 	def enable_controls(self):
@@ -252,6 +262,7 @@ class MainWindow(wx.Frame):
 		self.toolsstoplist.Enable(True)
 		self.toolsview.Enable(True)
 		self.toolbar.EnableTool(wx.ID_SAVE, True)
+		self.toolbar.EnableTool(self.tb_stoplist.GetId(), True)
 		self.toolbar.EnableTool(self.tb_viewtext.GetId(), True)
 
 	def load_wordlist(self, filename):
