@@ -18,7 +18,8 @@ except ImportError, error:
 	forcecli = True
 
 import ui.cli
-import ui.mainwindow
+if not forcecli:
+	import ui.mainwindow
 
 progname = os.path.basename(sys.argv[0])
 
