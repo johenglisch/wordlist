@@ -1,7 +1,7 @@
 #!/usr/bin/env python2
 
 #########################################################################
-# programme	: main.py                                               #
+# programme	: wordlist.py                                           #
 # description	: execute wordlist generator                            #
 # last edit	: 06-Aug-2012                                           #
 #	by	: Johannes Englisch                                     #
@@ -9,10 +9,16 @@
 
 import os
 import sys
-import wx
-
 import ui.cli as cli
-import ui.mainwindow as mainwindow
+
+forcecli = False
+try:
+	import wx
+except ImportError, error:
+	print 'wxPython not found. Forcing command-line mode'
+	forcecli = True
+if not forcecli:
+	import ui.mainwindow as mainwindow
 
 progname = os.path.basename(sys.argv[0])
 
@@ -85,16 +91,16 @@ def main(args):
 	if freqsort and endsort:
 		print 'Conflicting sort orders given'
 		return
-	if printtable or tabdelimited:
+	if printtable or tabdelimited or forcecli:
 		if not filename:
 			print 'No text file given'
 			usage()
 			return
 		cli = wlcli.CLI(filename, stoplistfiles, freqsort, endsort)
-		if printtable:
-			cli.print_table()
-		else:
+		if tabdelimited:
 			cli.print_tabdelimited()
+		else:
+			cli.print_table()
 	else:
 		wxapp = wx.App()
 		mainwindow.MainWindow(filename, stoplistfiles, None)
