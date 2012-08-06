@@ -17,7 +17,8 @@ except ImportError, error:
 	print 'wxPython not found. Forcing command-line mode'
 	forcecli = True
 
-import ui
+import ui.cli
+import ui.mainwindow
 
 progname = os.path.basename(sys.argv[0])
 
