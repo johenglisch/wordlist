@@ -13,6 +13,7 @@ import os
 import wx
 from wordlist import Wordlist
 from textview import TextView
+from finddlg import FindDlg
 from stoplistdlg import StoplistDlg
 
 
@@ -41,6 +42,8 @@ class WordlistTable(wx.ListCtrl):
 	attributes:
 		sortbyend	sort wordlist by word ends?
 		sortbyfreq	sort wordlist by frequency?
+		searchterm	term that is searched within the list
+		lasthit		index of the last found item
 		parent		the parent window
 		wordlist	the wordlist to be displayed
 	'''
@@ -51,9 +54,38 @@ class WordlistTable(wx.ListCtrl):
 		self.wordlist = None
 		self.sortbyend = False
 		self.sortbyfreq = False
+		self.searchterm = ''
 		# drag'n'drop support
 		droptarget = TableDND(self)
 		self.SetDropTarget(droptarget)
+
+	def find(self):
+		'''search for first occurence of self.searchterm'''
+		while True:
+			sel = self.GetNextSelected(-1)
+			if sel == -1:
+				break
+			self.Select(sel, False)
+		self.lasthit = self.FindItem(-1, self.searchterm,
+				partial = True)
+		if self.lasthit == -1:
+			self.parent.SetStatusText('Search term not found')
+		else:
+			self.Select(self.lasthit)
+			self.Focus(self.lasthit)
+
+	def find_next(self):
+		'''show next occurence of self.searchterm'''
+		newhit = self.FindItem(self.lasthit + 1, self.searchterm,
+				partial = True)
+		if newhit == -1:
+			self.parent.SetStatusText('Search reached the end. Starting from the beginning.')
+			self.find()
+		else:
+			self.Select(self.lasthit, False)
+			self.Select(newhit)
+			self.Focus(newhit)
+			self.lasthit = newhit
 
 	def get_sorted(self):
 		'''return sorted content of the wordlist'''
@@ -88,6 +120,7 @@ class MainWindow(wx.Frame):
 		dirname		directory of the text file
 		filename	file name of the text file
 		wordlist	the wordlist
+		searchterm	the word currently searched for
 	widgets:
 		filesave	menu entry: File -> Save...
 		viewbyword	menu entry: View -> Sort by beginning of word
@@ -164,6 +197,8 @@ class MainWindow(wx.Frame):
 		self.Bind(wx.EVT_MENU, self.on_open, fileopen)
 		self.Bind(wx.EVT_MENU, self.on_save, self.filesave)
 		self.Bind(wx.EVT_MENU, self.on_quit, filequit)
+		self.Bind(wx.EVT_MENU, self.on_find, self.editfind)
+		self.Bind(wx.EVT_MENU, self.on_findnext, self.editfindnext)
 		self.Bind(wx.EVT_MENU, self.on_sort, self.viewbyword)
 		self.Bind(wx.EVT_MENU, self.on_sort, self.viewbyend)
 		self.Bind(wx.EVT_MENU, self.on_sort, self.viewbyfreq)
@@ -195,6 +230,8 @@ class MainWindow(wx.Frame):
 	def disable_controls(self):
 		'''disable controls'''
 		self.filesave.Enable(False)
+		self.editfind.Enable(False)
+		self.editfindnext.Enable(False)
 		self.viewbyword.Check(True)
 		self.viewbyword.Enable(False)
 		self.viewbyend.Enable(False)
@@ -207,6 +244,7 @@ class MainWindow(wx.Frame):
 	def enable_controls(self):
 		'''enable controls'''
 		self.filesave.Enable(True)
+		self.editfind.Enable(True)
 		self.viewbyword.Enable(True)
 		self.viewbyend.Enable(True)
 		self.viewbyfreq.Enable(True)
@@ -227,11 +265,21 @@ class MainWindow(wx.Frame):
 		self.filename = os.path.basename(filename)
 		self.enable_controls()
 
-	def on_copy(self, event):
-		'''copy selected content to clipboard'''
-		text = self.table.Copy()
+	def on_find(self, event):
+		'''search for word in wordlist'''
+		dlg = FindDlg(self, wx.ID_ANY)
+		response = dlg.ShowModal()
+		if response == wx.ID_OK:
+			self.table.searchterm = dlg.searchterm
+			self.table.find()
+			self.editfindnext.Enable(True)
+		dlg.Destroy()
 
-	def on_open(self, event, filename=''):
+	def on_findnext(self, event):
+		'''search for next occurence of the search term'''
+		self.table.find_next()
+
+	def on_open(self, event):
 		'''open a text file and generate wordlist'''
 		dialog = wx.FileDialog(self, message='', defaultDir=self.dirname,
 				defaultFile=self.filename, wildcard='*', style=wx.OPEN)
