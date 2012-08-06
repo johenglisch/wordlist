@@ -11,7 +11,7 @@ __all__ = ['MainWindow']
 
 import os
 import wx
-from wordlist import Wordlist
+from wordlist-class import Wordlist
 from textview import TextView
 from finddlg import FindDlg
 from stoplistdlg import StoplistDlg
