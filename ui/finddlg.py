@@ -27,7 +27,8 @@ class FindDlg(wx.Dialog):
 		vbox = wx.BoxSizer(wx.VERTICAL)
 		vbox.Add(wx.StaticText(self, id = wx.ID_ANY, label = 'Enter search term:'))
 		# text control
-		self.textctrl = wx.TextCtrl(self)
+		self.textctrl = wx.TextCtrl(self, wx.ID_ANY,
+				style = wx.TE_PROCESS_ENTER)
 		vbox.Add(self.textctrl, flag = wx.EXPAND)
 		# buttons
 		hbox = wx.BoxSizer(wx.HORIZONTAL)
@@ -40,6 +41,7 @@ class FindDlg(wx.Dialog):
 		self.Fit()
 		# events
 		butok.Bind(wx.EVT_BUTTON, self.on_ok)
+		self.textctrl.Bind(wx.EVT_TEXT_ENTER, self.on_ok)
 
 	def on_ok(self, event):
 		'''OK button applies search term'''
