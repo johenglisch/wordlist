@@ -275,6 +275,7 @@ class MainWindow(wx.Frame):
 			text = unicode(f.read(), 'utf-8')
 		self.wordlist = Wordlist(text)
 		self.SetStatusText('Data read.')
+		self.SetTitle(os.path.basename(filename))
 		self.dirname = os.path.dirname(filename)
 		self.filename = os.path.basename(filename)
 		self.enable_controls()
