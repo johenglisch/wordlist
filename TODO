@@ -1,4 +1,5 @@
 General:
+ * rethink regex
 
 Wordlist:
 
@@ -7,6 +8,4 @@ Command-line interface:
 Graphical user interface:
 
 Readme:
-
- * write
 
