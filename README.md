@@ -7,8 +7,8 @@ Wordlist
 plain text file.
 
 This wordlist then is sortable by the beginnings or the ends of the words, or
-by their frequency.
-The output can be saved as a tab-delimited textfile for futher processing.
+by their frequency.  The output can be saved as a tab-delimited textfile for
+futher processing.
 
 Also the script supports wordlist filtering using stoplists.
 

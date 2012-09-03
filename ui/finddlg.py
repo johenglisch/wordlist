@@ -1,11 +1,6 @@
 #!/usr/bin/env python2
 
-#########################################################################
-# programme	: finddlg.py                                            #
-# description	: simple search dialogue                                #
-# last edit	: 06-Aug-2012                                           #
-#	by	: Johannes Englisch                                     #
-#########################################################################
+'''finddlg.py - a simple search dialogue'''
 
 import wx
 

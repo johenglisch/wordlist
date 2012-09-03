@@ -1,11 +1,6 @@
 #!/usr/bin/env python2
 
-#########################################################################
-# programme	: wordlist-cli                                          #
-# description	: command line word list programme                      #
-# last edit	: 01-Aug-2012                                           #
-#	by	: Johannes Englisch                                     #
-#########################################################################
+'''cli.py - the command-line user interface of the word list'''
 
 import re
 from wl import Wordlist

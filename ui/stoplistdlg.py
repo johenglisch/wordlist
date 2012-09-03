@@ -1,11 +1,6 @@
 #!/usr/bin/env python2
 
-#########################################################################
-# programme	: stoplist.py                                           #
-# description	: stoplist editor dialog for the Wordlist programme     #
-# last edit	: 05-Aug-2012                                           #
-#	by	: Johannes Englisch                                     #
-#########################################################################
+'''stoplist.py - a dialogue for editing stoplists'''
 
 import os
 import re

@@ -1,11 +1,6 @@
 #!/usr/bin/env python2
 
-#########################################################################
-# programme	: mainwindow.py                                         #
-# description	: main window of the wordlist gui                       #
-# last edit	: 02-Aug-2012                                           #
-#	by	: Johannes Englisch                                     #
-#########################################################################
+'''mainwindow.py - the main window of the word list GUI'''
 
 __all__ = ['MainWindow']
 

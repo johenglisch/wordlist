@@ -1,11 +1,6 @@
 #!/usr/bin/env python2
 
-#########################################################################
-# programme	: textview.py                                           #
-# description	: simple text viewer window                             #
-# last edit	: 02-Aug-2012                                           #
-#	by	: Johannes Englisch                                     #
-#########################################################################
+'''textview.py - a simple text viewer window'''
 
 import wx
 

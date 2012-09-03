@@ -1,11 +1,6 @@
 #!/usr/bin/env python2
 
-#########################################################################
-# programme	: wl.py                                                 #
-# description	: class of a wordlist                                   #
-# last edit	: 06-Aug-2012                                           #
-#	by	: Johannes Englisch                                     #
-#########################################################################
+'''wl.py - implementation of the word list itself'''
 
 import re
 from collections import Counter
