@@ -14,7 +14,7 @@ forcecli = False
 try:
 	import wx
 except ImportError, error:
-	print 'wxPython not found. Forcing command-line mode'
+	print 'Could not import wxPython. Forcing command-line mode'
 	forcecli = True
 
 import ui.cli
