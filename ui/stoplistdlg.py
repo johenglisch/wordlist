@@ -68,10 +68,14 @@ class StoplistDlg(wx.Dialog):
 		path = dialog.GetPath()
 		dialog.Destroy()
 		if response == wx.ID_OK:
-			with open(path, 'r') as f:
-				content = unicode(f.read(), 'utf-8')
-				content = regex.findall(content)
-				self.textctrl.WriteText('\n'.join(content))
+			try:
+				with open(path, 'r') as f:
+					content = unicode(f.read(), 'utf-8')
+					content = regex.findall(content)
+					self.textctrl.WriteText('\n'.join(content))
+			except Exception as e:
+				wx.MessageBox(str(e), '', wx.OK
+						| wx.ICON_ERROR)
 		dialog.Destroy()
 
 	def on_save(self, event):
@@ -97,7 +101,11 @@ class StoplistDlg(wx.Dialog):
 			content = regex.findall(self.textctrl.GetValue())
 			content = ['{0}\r\n'.format(s.encode('utf-8'))
 					for s in content]
-			with open(path, 'w') as f:
-				f.writelines(content)
+			try:
+				with open(path, 'w') as f:
+					f.writelines(content)
+			except Exception as e:
+				wx.MessageBox(str(e), '', wx.OK
+						| wx.ICON_ERROR)
 
 

@@ -271,13 +271,18 @@ class MainWindow(wx.Frame):
 		'''load wordlist from file'''
 		filename = os.path.abspath(filename)
 		self.SetStatusText('Reading data from file...')
-		with open(filename, 'r') as f:
-			text = unicode(f.read(), 'utf-8')
-		self.wordlist = Wordlist(text)
-		self.SetStatusText('Data read.')
-		self.SetTitle(os.path.basename(filename))
-		self.dirname = os.path.dirname(filename)
-		self.filename = os.path.basename(filename)
+		try:
+			with open(filename, 'r') as f:
+				text = unicode(f.read(), 'utf-8')
+		except Exception as e:
+			wx.MessageBox(str(e), '', wx.OK | wx.ICON_ERROR)
+			self.SetStatusText('Could not read data.')
+		else:
+			self.wordlist = Wordlist(text)
+			self.SetStatusText('Data read.')
+			self.SetTitle(os.path.basename(filename))
+			self.dirname = os.path.dirname(filename)
+			self.filename = os.path.basename(filename)
 		self.enable_controls()
 
 	def on_find(self, event):
@@ -323,9 +328,15 @@ class MainWindow(wx.Frame):
 			self.SetStatusText('Saving file...')
 			tab = ['{0}\t{1}\r\n'.format(w.encode('utf-8'), f)
 					for w, f in self.table.get_sorted()]
-			with open(filename, 'w') as f:
-				f.writelines(tab)
-			self.SetStatusText('File saved.')
+			try:
+				with open(filename, 'w') as f:
+					f.writelines(tab)
+			except Exception as e:
+				wx.MessageBox(str(e), '', wx.OK
+						| wx.ICON_ERROR)
+				self.SetStatusText('Could not save file.')
+			else:
+				self.SetStatusText('File saved.')
 
 	def on_sort(self, event):
 		'''sort wordlist'''
