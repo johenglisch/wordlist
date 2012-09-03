@@ -30,4 +30,12 @@ class Wordlist(Counter):
 		L.sort()
 		return [(w[::-1], f) for w, f in L]
 
+	def items_by_wordbeginning(self):
+		'''return wordlist sorted by the beginnings of the words'''
+		return self.items()
+
+	def items_by_frequency(self):
+		'''return wordlist sorted by word frequency'''
+		return self.most_common()
+
 

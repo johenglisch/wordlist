@@ -85,10 +85,10 @@ class WordlistTable(wx.ListCtrl):
 	def get_sorted(self):
 		'''return sorted content of the wordlist'''
 		if self.sortbyfreq:
-			return self.wordlist.most_common()
+			return self.wordlist.items_by_frequency()
 		if self.sortbyend:
 			return self.wordlist.items_by_wordend()
-		return sorted(self.wordlist.items())
+		return sorted(self.wordlist.items_by_wordbeginning())
 
 	def update(self, wordlist = None):
 		'''refill the table with the content of the wordlist'''

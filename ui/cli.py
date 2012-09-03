@@ -29,8 +29,8 @@ class CLI():
 		if self.endsort:
 			return self.wordlist.items_by_wordend()
 		if self.freqsort:
-			return self.wordlist.most_common()
-		return sorted(self.wordlist.items())
+			return self.wordlist.items_by_frequency()
+		return sorted(self.wordlist.items_by_wordbeginning())
 
 	def print_table(self):
 		'''print wordlist as a table'''
