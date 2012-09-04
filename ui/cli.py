@@ -38,17 +38,19 @@ class CLI():
 		align = '<'
 		if self.endsort:
 			align = '>'
-		print '+-{0}-+-{1}-+'.format(llen * '-', rlen * '-')
+		print '+-{0}-+-{1}-+'.format(llen * '-', rlen * '-').encode(
+				'utf-8')
 		for l, r in values:
-			print u'| {0:{align}{llen}} | {1:<{rlen}} |'.format(
+			print u'| {0:{align}{llen}} | {1:>{rlen}} |'.format(
 					l, r, align=align, llen=llen,
-					rlen=rlen)
-		print '+-{0}-+-{1}-+'.format(llen * '-', rlen * '-')
+					rlen=rlen).encode('utf-8')
+		print '+-{0}-+-{1}-+'.format(llen * '-', rlen * '-').encode(
+				'utf-8')
 
 	def print_tabdelimited(self):
 		'''print wordlist as tab-delimited text'''
 		values = self.get_sorted()
 		for l, r in values:
-			print u'{0}\t{1}'.format(l, r)
+			print u'{0}\t{1}'.format(l, r).encode('utf-8')
 
 
