@@ -3,8 +3,7 @@
 '''stoplist.py - a dialogue for editing stoplists'''
 
 import os
-import re
-regex = re.compile('\w+', re.UNICODE)
+from wl import re_word
 import wx
 
 class StoplistDlg(wx.Dialog):
@@ -47,7 +46,7 @@ class StoplistDlg(wx.Dialog):
 
 	def on_ok(self, event):
 		'''OK button applies stoplist changes and closes dialogue'''
-		self.stoplist = regex.findall(self.textctrl.GetValue())
+		self.stoplist = re_word.findall(self.textctrl.GetValue())
 		self.stoplist = [s.lower() for s in self.stoplist]
 		self.EndModal(wx.ID_OK)
 
@@ -66,7 +65,7 @@ class StoplistDlg(wx.Dialog):
 			try:
 				with open(path, 'r') as f:
 					content = unicode(f.read(), 'utf-8')
-					content = regex.findall(content)
+					content = re_word.findall(content)
 					self.textctrl.WriteText('\n'.join(content))
 			except Exception as e:
 				wx.MessageBox(str(e), '', wx.OK
@@ -93,7 +92,7 @@ class StoplistDlg(wx.Dialog):
 				msg.Destroy()
 				if confirm != wx.ID_YES:
 					return
-			content = regex.findall(self.textctrl.GetValue())
+			content = re_word.findall(self.textctrl.GetValue())
 			content = ['{0}\r\n'.format(s.encode('utf-8'))
 					for s in content]
 			try:

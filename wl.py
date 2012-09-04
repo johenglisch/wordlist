@@ -6,6 +6,9 @@ import re
 from collections import Counter
 
 
+re_word = re.compile('\w+', re.UNICODE)
+
+
 class Wordlist(Counter):
 	'''Counter subclass for creating a wordlist
 	
@@ -20,7 +23,7 @@ class Wordlist(Counter):
 		self.stoplist = []
 		if stoplist:
 			self.stoplist = stoplist
-		words = re.findall('(?u)\w+', text.lower())
+		words = re_word.findall(text.lower())
 		words = [s for s in words if s not in self.stoplist]
 		self.update(words)
 
