@@ -2,8 +2,7 @@
 
 '''cli.py - the command-line user interface of the word list'''
 
-import re
-from wl import Wordlist
+from wl import Wordlist, re_word
 
 class CLI():
 	'''command line interface for the wordlist'''
@@ -15,8 +14,7 @@ class CLI():
 			for s in stoplists:
 				with open(s, 'r') as f:
 					L = unicode(f.read(), 'utf-8')
-					L = re.findall(u'(?u)\w+',
-							L.lower())
+					L = re_word.findall(L.lower())
 					self.stoplist.extend(L)
 		with open(filename, 'r') as f:
 			self.wordlist = Wordlist(unicode(f.read(), 'utf-8'),
