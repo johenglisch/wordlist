@@ -66,6 +66,8 @@ class StoplistDlg(wx.Dialog):
 				with open(path, 'r') as f:
 					content = unicode(f.read(), 'utf-8')
 					content = re_word.findall(content)
+					if self.textctrl.GetValue():
+						self.textctrl.WriteText('\n')
 					self.textctrl.WriteText('\n'.join(content))
 			except Exception as e:
 				wx.MessageBox(str(e), '', wx.OK
