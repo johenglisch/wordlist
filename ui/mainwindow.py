@@ -359,6 +359,9 @@ class MainWindow(wx.Frame):
 			self.textview.update_text()
 			self.textview.SetFocus()
 		else:
-			self.textview = TextView(self.wordlist.text, self)
+			self.textview = TextView(
+					self.wordlist.text,
+					self.filename,
+					self)
 
 
