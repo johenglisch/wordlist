@@ -1,24 +1,27 @@
 Wordlist
 ========
 
+
 ## Description ##
 
-`Wordlist` is a python script that generates word list from any given
-plain text file.
+`Wordlist` is a python script that generates word list from a given plain text
+file.
 
 This wordlist then is sortable by the beginnings or the ends of the words, or
 by their frequency.  The output can be saved as a tab-delimited textfile for
-futher processing.
+futher processing.  The script supports wordlist filtering using stop lists.
 
-Also the script supports wordlist filtering using stoplists.
+`Wordlist` comes with both a command-line interface and an optional GUI using
+wxPython.
 
-The script comes with a graphical user interface, but can also be used on the
-command-line.
+*Note:*  The script assumes the input file to use the UFT-8 encoding.
+
 
 ## Requirements ##
 
  *	The script requires at least Python 2.7.
  *	The graphical user interface requires wxPython (optional).
+
 
 ## Usage ##
 
@@ -31,6 +34,7 @@ command-line.
 	        -p, --print-table       print table to standard output
 	        -s, --stoplist <file>   add stoplist file
 	        -t, --tab-delimited     print tab-delimited text to standard output
+
 
 ## License ##
 
