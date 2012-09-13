@@ -6,7 +6,8 @@ import re
 from collections import Counter
 
 
-re_word = re.compile('\w+', re.UNICODE)
+#re_word = re.compile('\w+', re.UNICODE)
+re_word = re.compile('[^\d\W_]+', re.UNICODE)
 
 
 class Wordlist(Counter):
