@@ -1,4 +1,4 @@
-#!/usr/bin/env python2
+#!/usr/bin/env python
 
 '''wordlist.py - a simple word list generator
 
@@ -29,27 +29,24 @@ SOFTWARE.'''
 
 import os
 import sys
+import ui.cli
+
 
 forcecli = False
 try:
 	import wx
-except ImportError, error:
-	print 'Could not import wxPython. Forcing command-line mode'
+except ImportError:
+	sys.stderr.write('Warning: wxPython not found. Falling back to CLI\n');
 	forcecli = True
-
-import ui.cli
-if not forcecli:
+else:
 	import ui.mainwindow
 
 progname = os.path.basename(sys.argv[0])
 
 
-def usage(longmsg=False):
+def usage():
 	'''print usage message'''
 	print 'usage: {0} [options] file'.format(progname)
-	if not longmsg:
-		print "Try '{0} -h' for more information".format(progname)
-		return
 	print
 	print 'options:'
 	print '        -e, --sort-by-wordend   sort wordlist by word end'
@@ -62,6 +59,9 @@ def usage(longmsg=False):
 
 def main(args):
 	# argument handling
+	if len(args) == 1:
+		usage()
+		return
 	filename = ''
 	stoplist = False
 	stoplistfiles = []
@@ -72,11 +72,10 @@ def main(args):
 	for s in args[1:]:
 		if s.startswith('-'):
 			if stoplist:
-				print 'No stoplist file given'
-				usage()
+				sys.stderr.write('Error: No stoplist file given\n')
 				return
 			if s == '-h' or s == '--help':
-				usage(True)
+				usage()
 				return
 			if s == '-e' or s == '--sort-by-wordend':
 				endsort = True
@@ -93,29 +92,25 @@ def main(args):
 			if s == '-t' or s == '--tab-delimited':
 				tabdelimited = True
 				continue
-			print 'Unknown option: {0}'.format(s)
-			usage()
+			sys.stderr.write('Error: Unknown option: {0}\n'.format(s))
 			return
 		if stoplist:
 			stoplistfiles.append(s)
 			stoplist = False
 			continue
 		if filename:
-			print 'Only one file allowed'
-			usage()
+			sys.stderr.write('Error: Only one text file allowed\n')
 			return
 		filename = s
 	if stoplist:
-		print 'No stoplist file given'
-		usage()
+		sys.stderr.write('Error: Missing stop list file\n')
 		return
 	if freqsort and endsort:
-		print 'Conflicting sort orders given'
+		sys.stderr.write('Error: Conflicting sort order options\n')
 		return
 	if printtable or tabdelimited or forcecli:
 		if not filename:
-			print 'No text file given'
-			usage()
+			sys.stderr('Error: Missing text file\n')
 			return
 		cli = ui.cli.CLI(filename, stoplistfiles, freqsort, endsort)
 		if tabdelimited:
