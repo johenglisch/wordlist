@@ -59,9 +59,6 @@ def usage():
 
 def main(args):
 	# argument handling
-	if len(args) == 1:
-		usage()
-		return
 	filename = ''
 	stoplist = False
 	stoplistfiles = []
