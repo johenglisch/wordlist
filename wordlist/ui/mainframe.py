@@ -1,13 +1,23 @@
 import wx
-import strings
-import menus
-import searchbar
-import toolbar
+import wordlist.ui.strings as strings
+import wordlist.ui.menus as menus
+import wordlist.ui.searchbar as searchbar
+import wordlist.ui.toolbar as toolbar
+import wordlist.ui.dialogs as dialogs
+import wordlist.wl as wl
 
 
 class MainFrame(wx.Frame):
-    def __init__(self, filename, parent):
-        super(MainFrame, self).__init__(parent)
+    def __init__(self, filename, *args, **kwargs):
+        super(MainFrame, self).__init__(*args, **kwargs)
+        # initialise wordlist
+        self.filename = ''
+        self.stoplist = list()
+        self.wordlist = None
+        if filename:
+            self.open_file(filename)
+
+        # initalise window
         self.init_ui()
         self.SetSize((400, 400))
         self.SetTitle(strings.programme_name)
@@ -50,3 +60,13 @@ class MainFrame(wx.Frame):
 
     def on_quit(self, event):
         self.Close()
+
+    def open_file(self, filename):
+        try:
+            with open(filename) as inputfile:
+                new_text = inputfile.read()
+        except IOError as error:
+            msg = dialogs.ErrorDialog(self, str(error))
+            msg.ShowModal()
+        self.wordlist = wl.Wordlist(text=new_text, stoplist=self.stoplist)
+        self.filename = filename
