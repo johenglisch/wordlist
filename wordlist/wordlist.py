@@ -39,7 +39,7 @@ except ImportError:
     sys.stderr.write('Warning: wxPython not found. Falling back to CLI\n')
     NO_WX = True
 else:
-    import ui.mainwindow
+    import ui.mainframe
 
 PROG_NAME = os.path.basename(sys.argv[0])
 
@@ -116,7 +116,7 @@ def main(args):
             cli.print_table()
     else:
         wxapp = wx.App()
-        ui.mainwindow.MainWindow(filename, None)
+        ui.mainframe.MainFrame(filename, None)
         wxapp.MainLoop()
 
 
