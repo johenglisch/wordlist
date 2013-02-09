@@ -22,13 +22,13 @@ class MainFrame(wx.Frame):
         self.SetMenuBar(menubar)
 
         # widgets
-        self.searchbar = searchbar.SearchBar(parent=self)
         self.wordlist = wx.ListCtrl(parent=self, style=wx.LC_REPORT)
+        self.searchbar = searchbar.SearchBar(parent=self)
 
         # layout
         vbox = wx.BoxSizer(wx.VERTICAL)
-        vbox.Add(item=self.searchbar, proportion=0, flag=wx.EXPAND)
         vbox.Add(item=self.wordlist, proportion=1, flag=wx.EXPAND)
+        vbox.Add(item=self.searchbar, proportion=0, flag=wx.EXPAND)
         self.SetSizer(vbox)
         self.searchbar.hide()
 
