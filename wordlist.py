@@ -29,7 +29,7 @@ SOFTWARE.'''
 
 import os
 import sys
-import ui.cli
+import wordlist.ui.cli
 
 
 NO_WX = False
@@ -39,7 +39,7 @@ except ImportError:
     sys.stderr.write('Warning: wxPython not found. Falling back to CLI\n')
     NO_WX = True
 else:
-    import ui.mainframe
+    import wordlist.ui.mainframe
 
 PROG_NAME = os.path.basename(sys.argv[0])
 
@@ -109,14 +109,14 @@ def main(args):
         if not filename:
             sys.stderr.write('Error: Missing text file\n')
             return
-        cli = ui.cli.CLI(filename, stoplistfiles, freqsort, endsort)
+        cli = wordlist.ui.cli.CLI(filename, stoplistfiles, freqsort, endsort)
         if tabdelimited:
             cli.print_tabdelimited()
         else:
             cli.print_table()
     else:
         wxapp = wx.App()
-        ui.mainframe.MainFrame(filename, None)
+        wordlist.ui.mainframe.MainFrame(filename, None)
         wxapp.MainLoop()
 
 

@@ -3,7 +3,7 @@
 '''cli.py - the command-line user interface of the word list'''
 
 
-from wl import Wordlist, RE_WORD
+from ..wl import Wordlist, RE_WORD
 
 
 class CLI():
