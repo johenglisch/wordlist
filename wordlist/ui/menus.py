@@ -26,6 +26,20 @@ class EditMenu(wx.Menu):
         self.findnext = self.Append(id=wx.ID_ANY,
                                     text=strings.menu_findnext,
                                     help=strings.menu_findnext_help)
+        self.AppendSeparator()
         self.stop = self.Append(id=wx.ID_ANY,
                                 text=strings.menu_stop,
                                 help=strings.menu_stop_help)
+
+class ViewMenu(wx.Menu):
+    def __init__(self, *args, **kwargs):
+        super(ViewMenu, self).__init__(*args, **kwargs)
+        self.bywords = self.AppendRadioItem(id=wx.ID_ANY,
+                                            text=strings.menu_bywords,
+                                            help=strings.menu_bywords_help)
+        self.byends = self.AppendRadioItem(id=wx.ID_ANY,
+                                           text=strings.menu_byends,
+                                           help=strings.menu_byends_help)
+        self.byfreq = self.AppendRadioItem(id=wx.ID_ANY,
+                                           text=strings.menu_byfreq,
+                                           help=strings.menu_byfreq_help)

@@ -17,8 +17,10 @@ class MainFrame(wx.Frame):
         menubar = wx.MenuBar()
         self.filemenu = menus.FileMenu()
         self.editmenu = menus.EditMenu()
+        self.viewmenu = menus.ViewMenu()
         menubar.Append(self.filemenu, strings.menu_file)
         menubar.Append(self.editmenu, strings.menu_edit)
+        menubar.Append(self.viewmenu, strings.menu_view)
         self.SetMenuBar(menubar)
 
         # widgets
