@@ -2,6 +2,7 @@ import wx
 import strings
 import menus
 import searchbar
+import toolbar
 
 
 class MainFrame(wx.Frame):
@@ -22,6 +23,11 @@ class MainFrame(wx.Frame):
         menubar.Append(self.editmenu, strings.menu_edit)
         menubar.Append(self.viewmenu, strings.menu_view)
         self.SetMenuBar(menubar)
+
+        # toolbar
+        self.toolbar = toolbar.ToolBar(self)
+        self.SetToolBar(self.toolbar)
+        self.toolbar.Realize()
 
         # widgets
         self.wordlist = wx.ListCtrl(parent=self, style=wx.LC_REPORT)

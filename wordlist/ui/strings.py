@@ -12,16 +12,24 @@ menu_find = '&Find\tCtrl-F'
 menu_findnext = 'Find &Next\tCtrl-G'
 menu_stop = 'Edit &Stoplist...\tCtrl-E'
 menu_bywords = 'Sort by &word beginning\tCtrl-1'
-menu_byends = 'Sort by word &ends\tCtrl-2'
+menu_byends = 'Sort by word &end\tCtrl-2'
 menu_byfreq = 'Sort by word &frequency\tCtrl-3'
 
+# toolbar
+tb_open = 'Open'
+tb_open_tooltip = 'Open text file'
+tb_save = 'Save'
+tb_save_tooltip = 'Save wordlist'
+tb_stop = 'Stoplist'
+tb_stop_tooltip = 'Edit stoplist'
+
 # statusbar
-help_open = 'Open text file'
-help_save = 'Save word list to file'
+help_open = 'Open text file and create wordlist'
+help_save = 'Save wordlist to text file'
 help_quit = 'Quit {0}'.format(programme_name)
 help_find = 'Search wordlist'
 help_findnext = 'Show next search result'
-help_stop = 'Edit the stoplist'
+help_stop = 'Open, edit, or save the stop list'
 help_bywords = 'Sort the wordlist by the beginnings of the words'
 help_byends = 'Sort the wordlist by the ends of the words'
 help_byfreq = 'Sort the wordlist by the frequencies of the words'
