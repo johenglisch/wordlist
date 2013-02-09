@@ -16,12 +16,13 @@ class MainFrame(wx.Frame):
         # menu
         menubar = wx.MenuBar()
         self.filemenu = menus.FileMenu()
+        self.editmenu = menus.EditMenu()
         menubar.Append(self.filemenu, strings.menu_file)
+        menubar.Append(self.editmenu, strings.menu_edit)
         self.SetMenuBar(menubar)
 
         # widgets
         self.searchbar = searchbar.SearchBar(parent=self)
-        # TODO hide searchbar by default
         self.wordlist = wx.ListCtrl(parent=self, style=wx.LC_REPORT)
 
         # layout
@@ -29,6 +30,15 @@ class MainFrame(wx.Frame):
         vbox.Add(item=self.searchbar, proportion=0, flag=wx.EXPAND)
         vbox.Add(item=self.wordlist, proportion=1, flag=wx.EXPAND)
         self.SetSizer(vbox)
+        self.searchbar.hide()
 
         # status bar
         self.statusbar = self.CreateStatusBar()
+
+        # events
+        self.Bind(event=wx.EVT_MENU, handler=self.on_quit, id=wx.ID_EXIT)
+        self.Bind(event=wx.EVT_MENU, handler=self.searchbar.on_find,
+                  id=wx.ID_FIND)
+
+    def on_quit(self, event):
+        self.Close()
