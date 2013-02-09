@@ -2,10 +2,15 @@ General:
  * rethink regex
 
 Wordlist:
+ * maybe rewrite
 
 Command-line interface:
+ * rewrite
 
 Graphical user interface:
+ * rewrite
 
-Readme:
+Documentation:
+ * check readme for changes
+ * document code
 
