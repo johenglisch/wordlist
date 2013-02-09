@@ -26,3 +26,6 @@ class EditMenu(wx.Menu):
         self.findnext = self.Append(id=wx.ID_ANY,
                                     text=strings.menu_findnext,
                                     help=strings.menu_findnext_help)
+        self.stop = self.Append(id=wx.ID_ANY,
+                                text=strings.menu_stop,
+                                help=strings.menu_stop_help)
