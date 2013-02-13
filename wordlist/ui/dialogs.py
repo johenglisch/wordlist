@@ -1,5 +1,5 @@
 import wx
-import strings
+import wordlist.ui.strings
 
 
 class ErrorDialog(wx.Dialog):

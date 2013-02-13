@@ -1,5 +1,5 @@
 import wx
-import strings
+import wordlist.ui.strings
 
 
 class FileMenu(wx.Menu):
@@ -30,6 +30,7 @@ class EditMenu(wx.Menu):
         self.stop = self.Append(id=wx.ID_ANY,
                                 text=strings.menu_stop,
                                 help=strings.help_stop)
+
 
 class ViewMenu(wx.Menu):
     def __init__(self, *args, **kwargs):

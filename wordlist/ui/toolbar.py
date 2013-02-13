@@ -1,5 +1,5 @@
 import wx
-import strings
+import wordlist.ui.strings
 
 
 class ToolBar(wx.ToolBar):
