@@ -1,5 +1,5 @@
 import wx
-import wordlist.ui.strings
+import wordlist.ui.strings as strings
 
 
 class FileMenu(wx.Menu):
