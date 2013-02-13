@@ -10,20 +10,18 @@ import wordlist.wl as wl
 class MainFrame(wx.Frame):
     def __init__(self, filename, *args, **kwargs):
         super(MainFrame, self).__init__(*args, **kwargs)
-        # initialise wordlist
         self.filename = ''
         self.stoplist = list()
         self.wordlist = None
+        self.init_ui()
+        self.Show()
         if filename:
             self.open_file(filename)
 
-        # initalise window
-        self.init_ui()
-        self.SetSize((400, 400))
-        self.SetTitle(strings.programme_name)
-        self.Show()
-
     def init_ui(self):
+        # window properties
+        self.SetTitle(strings.programme_name)
+        self.SetSize((400, 400))
         # menu
         menubar = wx.MenuBar()
         self.filemenu = menus.FileMenu()
@@ -68,5 +66,6 @@ class MainFrame(wx.Frame):
         except IOError as error:
             msg = dialogs.ErrorDialog(self, str(error))
             msg.ShowModal()
-        self.wordlist = wl.Wordlist(text=new_text, stoplist=self.stoplist)
-        self.filename = filename
+        else:
+            self.wordlist = wl.Wordlist(text=new_text, stoplist=self.stoplist)
+            self.filename = filename
