@@ -53,9 +53,19 @@ class MainFrame(wx.Frame):
         self.statusbar = self.CreateStatusBar()
 
         # events
+        self.Bind(event=wx.EVT_MENU, handler=self.on_open, id=wx.ID_OPEN)
         self.Bind(event=wx.EVT_MENU, handler=self.on_quit, id=wx.ID_EXIT)
         self.Bind(event=wx.EVT_MENU, handler=self.searchbar.on_find,
                   id=wx.ID_FIND)
+        self.Bind(event=wx.EVT_TOOL, handler=self.on_open, id=wx.ID_OPEN)
+
+    def on_open(self, event):
+        dlg = dialogs.OpenDialog(parent=self)
+        dlg.ShowModal()
+        filename = dlg.GetPath()
+        dlg.Destroy()
+        if filename:
+            self.open_file(filename)
 
     def on_quit(self, event):
         self.Close()

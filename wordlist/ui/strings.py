@@ -34,8 +34,9 @@ help_bywords = 'Sort the wordlist by the beginnings of the words'
 help_byends = 'Sort the wordlist by the ends of the words'
 help_byfreq = 'Sort the wordlist by the frequencies of the words'
 
-# error handling
-error_caption = 'Error'
+# dialog captions
+dlg_error = 'Error'
+dlg_open = 'Open text file'
 
 # word list viewer
 col_word = 'Word'
