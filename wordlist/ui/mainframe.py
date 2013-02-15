@@ -1,3 +1,4 @@
+import os.path
 import wx
 import wordlist.ui.strings as strings
 import wordlist.ui.menus as menus
@@ -73,23 +74,23 @@ class MainFrame(wx.Frame):
     def disable_controls(self):
         self.enable_controls(False)
 
-    def on_open(self, event):
-        dlg = dialogs.OpenDialog(parent=self)
-        dlg.ShowModal()
-        filename = dlg.GetPath()
-        dlg.Destroy()
-        if filename:
-            self.open_file(filename)
-
     def on_close(self, event):
         self.reset()
 
-    def on_save(self, event):
-        dlg = dialogs.SaveDialog(parent=self)
-        dlg.ShowModal()
+    def on_open(self, event):
+        dlg = dialogs.OpenDialog(parent=self)
+        answer = dlg.ShowModal()
         filename = dlg.GetPath()
         dlg.Destroy()
-        if filename:
+        if answer == wx.ID_OK:
+            self.open_file(filename)
+
+    def on_save(self, event):
+        dlg = dialogs.SaveDialog(parent=self)
+        answer = dlg.ShowModal()
+        filename = dlg.GetPath()
+        dlg.Destroy()
+        if answer == wx.ID_OK:
             self.save_file(filename)
 
     def on_quit(self, event):
@@ -100,8 +101,7 @@ class MainFrame(wx.Frame):
             with open(filename) as inputfile:
                 new_text = inputfile.read()
         except IOError as error:
-            msg = dialogs.ErrorDialog(self, str(error))
-            msg.ShowModal()
+            dialogs.ErrorDialog(self, str(error))
         else:
             self.wordlist = wl.Wordlist(text=new_text, stoplist=self.stoplist)
             self.filename = filename
@@ -116,15 +116,13 @@ class MainFrame(wx.Frame):
         self.searchbar.hide()
 
     def save_file(self, filename):
-        lines = ['{word}\t{freq}'.format(word=word, freq=freq)
+        lines = ['{word}\t{freq}\n'.format(word=word, freq=freq)
                  for word, freq in self.wordlistview.get_data()]
         try:
-            with open(filename) as outputfile:
-                new_text = inputfile.writelines(lines)
+            with open(filename, 'w') as outputfile:
+                new_text = outputfile.writelines(lines)
         except IOError as error:
-            msg = dialogs.ErrorDialog(self, str(error))
-            msg.ShowModal()
+            dialogs.ErrorDialog(parent=self, message=str(error))
         else:
-            filename = os.basename(filename)
-            msg = dialogs.MessageDialog(self,
-                                        strings.dlg_filesaved.format(filename))
+            message = strings.dlg_filesaved.format(os.path.basename(filename))
+            dialogs.MessageDialog(parent=self, message=message)

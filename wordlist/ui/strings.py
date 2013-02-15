@@ -41,6 +41,7 @@ dlg_error = 'Error'
 dlg_info = 'Information'
 dlg_open = 'Open text file'
 dlg_save = 'Save wordlist to file'
+dlg_filesaved = 'File \'{0}\' was saved successfully.'
 
 # word list viewer
 col_word = 'Word'
