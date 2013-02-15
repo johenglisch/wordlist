@@ -8,7 +8,9 @@ Command-line interface:
  * rewrite
 
 Graphical user interface:
- * rewrite
+ * implement find
+ * implement find next
+ * implement sortation
 
 Documentation:
  * check readme for changes
