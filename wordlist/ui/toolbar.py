@@ -26,3 +26,9 @@ class ToolBar(wx.ToolBar):
                                        longHelp=strings.help_stop,
                                        bitmap=icon_file)
 
+    def enable_tools(self, enable=True):
+        self.EnableTool(wx.ID_SAVE, enable)
+        self.EnableTool(self.stopf.GetId(), enable)
+
+    def disable_tools(self):
+        self.enable_tools(False)

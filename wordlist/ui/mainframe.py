@@ -15,6 +15,7 @@ class MainFrame(wx.Frame):
         self.stoplist = list()
         self.wordlist = None
         self.init_ui()
+        self.reset()
         self.Show()
         if filename:
             self.open_file(filename)
@@ -23,6 +24,7 @@ class MainFrame(wx.Frame):
         # window properties
         self.SetTitle(strings.programme_name)
         self.SetSize((400, 400))
+
         # menu
         menubar = wx.MenuBar()
         self.filemenu = menus.FileMenu()
@@ -54,10 +56,22 @@ class MainFrame(wx.Frame):
 
         # events
         self.Bind(event=wx.EVT_MENU, handler=self.on_open, id=wx.ID_OPEN)
+        self.Bind(event=wx.EVT_MENU, handler=self.on_save, id=wx.ID_SAVE)
+        self.Bind(event=wx.EVT_MENU, handler=self.on_close, id=wx.ID_CLOSE)
         self.Bind(event=wx.EVT_MENU, handler=self.on_quit, id=wx.ID_EXIT)
         self.Bind(event=wx.EVT_MENU, handler=self.searchbar.on_find,
                   id=wx.ID_FIND)
         self.Bind(event=wx.EVT_TOOL, handler=self.on_open, id=wx.ID_OPEN)
+        self.Bind(event=wx.EVT_TOOL, handler=self.on_save, id=wx.ID_SAVE)
+
+    def enable_controls(self, enable=True):
+        self.filemenu.enable_items(enable)
+        self.editmenu.enable_items(enable)
+        self.viewmenu.enable_items(enable)
+        self.toolbar.enable_tools(enable)
+
+    def disable_controls(self):
+        self.enable_controls(False)
 
     def on_open(self, event):
         dlg = dialogs.OpenDialog(parent=self)
@@ -66,6 +80,17 @@ class MainFrame(wx.Frame):
         dlg.Destroy()
         if filename:
             self.open_file(filename)
+
+    def on_close(self, event):
+        self.reset()
+
+    def on_save(self, event):
+        dlg = dialogs.SaveDialog(parent=self)
+        dlg.ShowModal()
+        filename = dlg.GetPath()
+        dlg.Destroy()
+        if filename:
+            self.save_file(filename)
 
     def on_quit(self, event):
         self.Close()
@@ -81,3 +106,25 @@ class MainFrame(wx.Frame):
             self.wordlist = wl.Wordlist(text=new_text, stoplist=self.stoplist)
             self.filename = filename
             self.wordlistview.set_wordlist(self.wordlist)
+            self.enable_controls()
+
+    def reset(self):
+        self.wordlist = None
+        self.stoplist = list()
+        self.disable_controls()
+        self.wordlistview.reset()
+        self.searchbar.hide()
+
+    def save_file(self, filename):
+        lines = ['{word}\t{freq}'.format(word=word, freq=freq)
+                 for word, freq in self.wordlistview.get_data()]
+        try:
+            with open(filename) as outputfile:
+                new_text = inputfile.writelines(lines)
+        except IOError as error:
+            msg = dialogs.ErrorDialog(self, str(error))
+            msg.ShowModal()
+        else:
+            filename = os.basename(filename)
+            msg = dialogs.MessageDialog(self,
+                                        strings.dlg_filesaved.format(filename))

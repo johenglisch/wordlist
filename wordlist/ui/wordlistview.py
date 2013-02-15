@@ -13,6 +13,13 @@ class WordlistView(wx.ListView, ListCtrlAutoWidthMixin):
         self.sortbyend= False
         self.reset()
 
+    def get_data(self):
+        if self.sortbyfreq:
+            return self.wordlist.items_by_frequency()
+        if self.sortbyend:
+            return self.wordlist.items_by_wordend()
+        return self.wordlist.items_by_wordbeginning()
+
     def reset(self):
         self.ClearAll()
         self.InsertColumn(0, heading=strings.col_word)
@@ -39,12 +46,7 @@ class WordlistView(wx.ListView, ListCtrlAutoWidthMixin):
 
     def update(self):
         self.reset()
-        if self.sortbyfreq:
-            data = self.wordlist.items_by_frequency()
-        elif self.sortbyend:
-            data = self.wordlist.items_by_wordend()
-        else:
-            data = self.wordlist.items_by_wordbeginning()
+        data = self.get_data()
         for index, (word, frequency) in enumerate(data):
             self.InsertStringItem(index=index, label=word)
             self.SetStringItem(index=index, col=1, label=str(frequency))
