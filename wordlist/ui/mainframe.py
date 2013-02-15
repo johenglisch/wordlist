@@ -4,6 +4,7 @@ import wordlist.ui.menus as menus
 import wordlist.ui.searchbar as searchbar
 import wordlist.ui.toolbar as toolbar
 import wordlist.ui.dialogs as dialogs
+import wordlist.ui.wordlistview as wordlistview
 import wordlist.wl as wl
 
 
@@ -38,12 +39,12 @@ class MainFrame(wx.Frame):
         self.toolbar.Realize()
 
         # widgets
-        self.wordlist = wx.ListCtrl(parent=self, style=wx.LC_REPORT)
+        self.wordlistview = wordlistview.WordlistView(parent=self)
         self.searchbar = searchbar.SearchBar(parent=self)
 
         # layout
         vbox = wx.BoxSizer(wx.VERTICAL)
-        vbox.Add(item=self.wordlist, proportion=1, flag=wx.EXPAND)
+        vbox.Add(item=self.wordlistview, proportion=1, flag=wx.EXPAND)
         vbox.Add(item=self.searchbar, proportion=0, flag=wx.EXPAND)
         self.SetSizer(vbox)
         self.searchbar.hide()
@@ -69,3 +70,4 @@ class MainFrame(wx.Frame):
         else:
             self.wordlist = wl.Wordlist(text=new_text, stoplist=self.stoplist)
             self.filename = filename
+            self.wordlistview.set_wordlist(self.wordlist)

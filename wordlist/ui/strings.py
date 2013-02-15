@@ -36,3 +36,7 @@ help_byfreq = 'Sort the wordlist by the frequencies of the words'
 
 # error handling
 error_caption = 'Error'
+
+# word list viewer
+col_word = 'Word'
+col_freq = 'Frequency'
