@@ -10,7 +10,7 @@ Command-line interface:
 Graphical user interface:
  * implement find
  * implement find next
- * implement sortation
+ * implement stop list editing
 
 Documentation:
  * check readme for changes

@@ -70,3 +70,6 @@ class ViewMenu(wx.Menu):
 
     def disable_items(self):
         self.enable_items(False)
+
+    def reset(self):
+        self.bywords.Check()

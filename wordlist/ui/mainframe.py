@@ -56,12 +56,22 @@ class MainFrame(wx.Frame):
         self.statusbar = self.CreateStatusBar()
 
         # events
+        # file menu
         self.Bind(event=wx.EVT_MENU, handler=self.on_open, id=wx.ID_OPEN)
         self.Bind(event=wx.EVT_MENU, handler=self.on_save, id=wx.ID_SAVE)
         self.Bind(event=wx.EVT_MENU, handler=self.on_close, id=wx.ID_CLOSE)
         self.Bind(event=wx.EVT_MENU, handler=self.on_quit, id=wx.ID_EXIT)
+        # tools menu
         self.Bind(event=wx.EVT_MENU, handler=self.searchbar.on_find,
                   id=wx.ID_FIND)
+        # view menu
+        self.Bind(event=wx.EVT_MENU, handler=self.on_sort,
+                  source=self.viewmenu.bywords)
+        self.Bind(event=wx.EVT_MENU, handler=self.on_sort,
+                  source=self.viewmenu.byends)
+        self.Bind(event=wx.EVT_MENU, handler=self.on_sort,
+                  source=self.viewmenu.byfreq)
+        # toolbar
         self.Bind(event=wx.EVT_TOOL, handler=self.on_open, id=wx.ID_OPEN)
         self.Bind(event=wx.EVT_TOOL, handler=self.on_save, id=wx.ID_SAVE)
 
@@ -93,13 +103,21 @@ class MainFrame(wx.Frame):
         if answer == wx.ID_OK:
             self.save_file(filename)
 
+    def on_sort(self, event):
+        if self.viewmenu.byfreq.IsChecked():
+            self.wordlistview.set_sortbyfreq()
+        elif self.viewmenu.byends.IsChecked():
+            self.wordlistview.set_sortbyends()
+        else:
+            self.wordlistview.set_sortbywords()
+
     def on_quit(self, event):
         self.Close()
 
     def open_file(self, filename):
         try:
             with open(filename) as inputfile:
-                new_text = inputfile.read()
+                new_text = unicode(inputfile.read(), 'utf8')
         except IOError as error:
             dialogs.ErrorDialog(self, str(error))
         else:
@@ -113,11 +131,13 @@ class MainFrame(wx.Frame):
         self.stoplist = list()
         self.disable_controls()
         self.wordlistview.reset()
+        self.viewmenu.reset()
         self.searchbar.hide()
 
     def save_file(self, filename):
-        lines = ['{word}\t{freq}\n'.format(word=word, freq=freq)
+        lines = [u'{word}\t{freq}\n'.format(word=word, freq=freq)
                  for word, freq in self.wordlistview.get_data()]
+        lines = [line.encode('utf8') for line in lines]
         try:
             with open(filename, 'w') as outputfile:
                 new_text = outputfile.writelines(lines)
