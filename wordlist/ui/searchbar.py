@@ -2,8 +2,9 @@ import wx
 
 
 class SearchBar(wx.SearchCtrl):
-    def __init__(self, *args, **kwargs):
-        super(SearchBar, self).__init__(*args, **kwargs)
+    def __init__(self, parent):
+        super(SearchBar, self).__init__(parent=parent,
+                                        style=wx.TE_PROCESS_ENTER)
         self.ShowSearchButton(True)
         self.ShowCancelButton(True)
         self.Bind(event=wx.EVT_SEARCHCTRL_CANCEL_BTN, handler=self.on_cancel)
@@ -17,9 +18,6 @@ class SearchBar(wx.SearchCtrl):
         self.Show(True)
         self.GetParent().GetSizer().Layout()
         self.SetFocus()
-
-    def on_find(self, event):
-        self.unhide()
 
     def on_key(self, event):
         if event.GetKeyCode() == wx.WXK_ESCAPE:

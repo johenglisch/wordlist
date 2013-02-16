@@ -62,8 +62,7 @@ class MainFrame(wx.Frame):
         self.Bind(event=wx.EVT_MENU, handler=self.on_close, id=wx.ID_CLOSE)
         self.Bind(event=wx.EVT_MENU, handler=self.on_quit, id=wx.ID_EXIT)
         # tools menu
-        self.Bind(event=wx.EVT_MENU, handler=self.searchbar.on_find,
-                  id=wx.ID_FIND)
+        self.Bind(event=wx.EVT_MENU, handler=self.on_find, id=wx.ID_FIND)
         # view menu
         self.Bind(event=wx.EVT_MENU, handler=self.on_sort,
                   source=self.viewmenu.bywords)
@@ -74,6 +73,11 @@ class MainFrame(wx.Frame):
         # toolbar
         self.Bind(event=wx.EVT_TOOL, handler=self.on_open, id=wx.ID_OPEN)
         self.Bind(event=wx.EVT_TOOL, handler=self.on_save, id=wx.ID_SAVE)
+        # searchbar
+        self.Bind(event=wx.EVT_SEARCHCTRL_SEARCH_BTN, handler=self.on_findnext,
+                  source=self.searchbar)
+        self.Bind(event=wx.EVT_TEXT_ENTER, handler=self.on_findnext,
+                  source=self.searchbar)
 
     def enable_controls(self, enable=True):
         self.filemenu.enable_items(enable)
@@ -86,6 +90,12 @@ class MainFrame(wx.Frame):
 
     def on_close(self, event):
         self.reset()
+
+    def on_find(self, event):
+        self.searchbar.unhide()
+
+    def on_findnext(self, event):
+        raise NotImplementedError  # TODO
 
     def on_open(self, event):
         dlg = dialogs.OpenDialog(parent=self)
